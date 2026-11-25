@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="A phone-friendly storm preparedness guide for South-East Queensland households.">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Storm Season Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a phone-first field guide. Navy "warning band" with the numbers you need, tab strip, then one view at a time. */
+:root{
+  --bg:#f2f4f6; --surface:#ffffff; --ink:#15212c; --muted:#53626f; --line:#d5dce2;
+  --band:#1d3850; --band-ink:#f4f7fa; --band-muted:#b9c8d6;
+  --accent:#c96f00; --accent-soft:#fff1dc; --accent-ink:#7a4100;
+  --ok:#2d7a4c; --ok-soft:#e1f2e8; --due:#b3261e; --due-soft:#fbe4e2;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0d151c; --surface:#16212b; --ink:#e5ecf1; --muted:#97a7b4; --line:#2a3a47;
+  --band:#12293c; --band-ink:#eef3f7; --band-muted:#9fb4c6;
+  --accent:#f0a33a; --accent-soft:#3a2a12; --accent-ink:#ffd59c;
+  --ok:#62c48f; --ok-soft:#163324; --due:#ff8a7f; --due-soft:#3d1a18; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d151c; --surface:#16212b; --ink:#e5ecf1; --muted:#97a7b4; --line:#2a3a47;
+  --band:#12293c; --band-ink:#eef3f7; --band-muted:#9fb4c6;
+  --accent:#f0a33a; --accent-soft:#3a2a12; --accent-ink:#ffd59c;
+  --ok:#62c48f; --ok-soft:#163324; --due:#ff8a7f; --due-soft:#3d1a18; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+a{color:inherit}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;letter-spacing:.01em}
+h2{font-size:1.9rem;line-height:1.1;font-weight:700}
+h3{font-size:1.3rem;font-weight:600}
+p{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:.875rem}
+
+/* Band */
+.band{background:var(--band);color:var(--band-ink);margin-top:calc(-1 * env(safe-area-inset-top,0px));padding-top:calc(env(safe-area-inset-top,0px) + 18px);padding-bottom:16px}
+.band .wrap{display:flex;flex-direction:column;gap:14px}
+.brand{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand h1{font-size:2.2rem;font-weight:700;line-height:1}
+.brand h1 span{color:var(--accent)}
+.brand p{color:var(--band-muted);font-size:.85rem}
+.nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.num{border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:8px 10px;min-width:0}
+.num b{display:block;font-family:var(--display);font-size:1.55rem;font-weight:700;line-height:1.05;font-variant-numeric:tabular-nums;user-select:all}
+.num small{display:block;color:var(--band-muted);font-size:.75rem;line-height:1.3}
+.num.hot b{color:var(--accent)}
+
+.sync{display:flex;gap:8px;align-items:baseline;font-size:.8rem;line-height:1.4;color:var(--band-muted);max-width:70ch}
+.sync::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--band-muted);transform:translateY(-1px)}
+.sync[data-state="ok"]::before{background:#5cc08a}
+.sync[data-state="busy"]::before{background:var(--accent)}
+
+.acct{display:flex;flex-direction:column;gap:10px;font-size:.88rem;color:var(--band-muted)}
+.acct #acctIn{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.acct #acctIn[hidden],.acct form[hidden],.acct #acctOut[hidden]{display:none}
+.acct strong{color:var(--band-ink);overflow-wrap:anywhere}
+.band-btn{background:transparent;color:var(--band-ink);border-color:rgba(255,255,255,.35)}
+.band-btn:hover{border-color:var(--band-ink)}
+.acct form{display:flex;flex-direction:column;gap:10px;max-width:560px}
+.auth-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.acct .field label{color:var(--band-muted)}
+.acct .field input{background:rgba(255,255,255,.08);color:var(--band-ink);border-color:rgba(255,255,255,.3)}
+.auth-btns{display:flex;gap:8px;flex-wrap:wrap}
+.auth-msg{color:var(--band-ink);min-height:1.2em}
+.auth-msg:empty{display:none}
+.auth-note{font-size:.78rem}
+
+/* Tabs */
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--band)}
+.tabs .wrap{overflow-x:auto;scrollbar-width:none}
+.tabs .wrap::-webkit-scrollbar{display:none}
+.tabs nav{display:flex;gap:2px;min-width:max-content}
+.tabs a{display:block;padding:12px 12px 10px;text-decoration:none;font-weight:600;font-size:.92rem;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap}
+.tabs a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tabs a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+main{padding-block:22px 48px}
+section[data-view]{display:flex;flex-direction:column;gap:20px}
+.lead{max-width:62ch;color:var(--muted)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.callout{background:var(--accent-soft);color:var(--accent-ink);border-radius:10px;padding:12px 14px;font-size:.95rem}
+.callout b{color:inherit}
+
+/* Checklists */
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.checks li{border-top:1px solid var(--line)}
+.checks li:first-child{border-top:0}
+.check{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:10px 0;align-items:start;cursor:pointer}
+.check input{width:22px;height:22px;margin:2px 0 0;accent-color:var(--ok);cursor:pointer}
+.check .t{min-width:0}
+.check .t strong{font-weight:600}
+.check .t span{display:block;color:var(--muted);font-size:.875rem}
+.check input:checked + .t strong{text-decoration:line-through;text-decoration-color:var(--muted);color:var(--muted)}
+.phase{display:flex;flex-direction:column;gap:4px}
+.phase-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.btn{font:inherit;font-size:.875rem;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#1b1100}
+
+/* Kit */
+.controls{display:flex;flex-direction:column;gap:12px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--surface);align-self:flex-start}
+.seg button{font:inherit;font-weight:600;font-size:.9rem;border:0;background:transparent;color:var(--muted);padding:6px 16px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--band);color:var(--band-ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:.82rem;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:999px;padding:4px 11px;cursor:pointer}
+.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-soft)}
+.toggle{display:flex;align-items:center;gap:8px;font-size:.9rem;color:var(--muted);cursor:pointer}
+.toggle input{width:18px;height:18px;accent-color:var(--ok)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
+.stat b{display:block;font-family:var(--display);font-size:1.6rem;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat small{color:var(--muted);font-size:.78rem;line-height:1.3;display:block}
+.meter{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:6px}
+.meter i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+.cat{display:flex;flex-direction:column}
+.cat-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding-bottom:6px;border-bottom:2px solid var(--ink)}
+.cat-head small{color:var(--muted);font-variant-numeric:tabular-nums;font-size:.85rem}
+.item{display:grid;grid-template-columns:28px 1fr auto;gap:4px 10px;padding:12px 0;border-bottom:1px solid var(--line);align-items:start}
+.item > input{width:22px;height:22px;margin:2px 0 0;accent-color:var(--ok);cursor:pointer}
+.item .name{font-weight:600;min-width:0}
+.item.done .name{text-decoration:line-through;color:var(--muted)}
+.item .cost{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap;text-align:right}
+.item .meta{grid-column:2 / 4;color:var(--muted);font-size:.875rem;min-width:0}
+.item details{grid-column:2 / 4;font-size:.9rem}
+.item summary{cursor:pointer;color:var(--accent-ink);font-weight:600;font-size:.85rem;width:max-content}
+.item details p{margin-top:6px;max-width:62ch}
+.item details a{color:var(--accent-ink);font-weight:600;overflow-wrap:anywhere}
+.tag{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:4px;margin-left:6px;vertical-align:2px}
+.tag.start{background:var(--ok-soft);color:var(--ok)}
+.tag.opt{background:var(--line);color:var(--muted)}
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;align-items:end}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field label{font-size:.8rem;font-weight:600;color:var(--muted);letter-spacing:.02em}
+.field input,.field select,.field textarea{font:inherit;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--bg);color:var(--ink);width:100%}
+.calc-out{font-family:var(--display);font-size:2rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.calc-out small{font-family:var(--body);font-size:.85rem;font-weight:500;color:var(--muted);margin-left:4px}
+
+/* Two-column cards */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.grid2 > *{min-width:0}
+
+/* Upkeep */
+.up{display:grid;grid-template-columns:1fr auto;gap:6px 12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center}
+.up:last-child{border-bottom:0}
+.up .what{min-width:0}
+.up .what strong{font-weight:600;display:block}
+.up .what span{color:var(--muted);font-size:.85rem}
+.up .when{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.up input[type=date]{font:inherit;font-size:.85rem;border:1px solid var(--line);border-radius:8px;padding:5px 8px;background:var(--bg);color:var(--ink)}
+.pill{font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.due{background:var(--due-soft);color:var(--due)}
+.pill.unset{background:var(--line);color:var(--muted)}
+@media (max-width:520px){.up{grid-template-columns:1fr}.up .when{justify-content:flex-start}}
+
+/* Safety */
+.rules{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.rules li{display:grid;grid-template-columns:6px 1fr;gap:12px}
+.rules li::before{content:"";background:var(--due);border-radius:3px}
+.rules li.amber::before{background:var(--accent)}
+.rules strong{display:block}
+.rules span{color:var(--muted);font-size:.92rem}
+
+/* Contacts & links */
+.contact{display:grid;grid-template-columns:auto 1fr;gap:2px 14px;padding:10px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.contact:last-child{border-bottom:0}
+.contact b{font-family:var(--display);font-size:1.4rem;font-weight:700;font-variant-numeric:tabular-nums;user-select:all;min-width:7.5ch}
+.links{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.links li{padding:10px 0;border-bottom:1px solid var(--line)}
+.links li:last-child{border-bottom:0}
+.links a{font-weight:600;color:var(--accent-ink)}
+.links span{display:block;color:var(--muted);font-size:.875rem}
+
+.plan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.plan-grid .wide{grid-column:1 / -1}
+.status{font-size:.85rem;color:var(--ok);min-height:1.2em}
+
+footer{border-top:1px solid var(--line);padding-block:20px 32px;color:var(--muted);font-size:.85rem}
+footer .wrap{display:flex;flex-direction:column;gap:6px}
+@media (max-width:420px){.num b{font-size:1.3rem}.stat b{font-size:1.35rem}.brand h1{font-size:1.9rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="band">
+  <div class="wrap">
+    <div class="brand">
+      <h1>Storm Season <span>Kit</span></h1>
+      <p>A household guide for South-East Queensland</p>
+    </div>
+    <div class="nums" aria-label="Emergency numbers">
+      <div class="num hot"><b>000</b><small>Life in danger</small></div>
+      <div class="num"><b>132 500</b><small>SES: storm &amp; flood help</small></div>
+      <div class="num"><b>612 AM</b><small>ABC Radio Brisbane</small></div>
+    </div>
+    <p class="sync" id="syncNote" role="status" data-state="device"></p>
+    <div class="acct" id="acct" hidden>
+      <div id="acctOut"><button class="btn band-btn" type="button" id="openSignIn">Sign in or create an account</button></div>
+      <div id="acctIn" hidden><span>Signed in as <strong id="acctEmail"></strong></span> <button class="btn band-btn" type="button" id="signOut">Sign out</button></div>
+      <form id="authForm" hidden autocomplete="on">
+        <div class="auth-row">
+          <div class="field"><label for="authEmail">Email</label><input id="authEmail" type="email" autocomplete="email" required></div>
+          <div class="field"><label for="authPass">Password (8+ characters)</label><input id="authPass" type="password" autocomplete="current-password" minlength="8" required></div>
+        </div>
+        <div class="auth-btns"><button class="btn primary" type="button" id="signInBtn">Sign in</button><button class="btn band-btn" type="button" id="signUpBtn">Create account</button></div>
+        <p class="auth-msg" id="authMsg" aria-live="polite"></p>
+        <p class="auth-note">We only store your email and your list. Your list is private to you.</p>
+      </form>
+    </div>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="wrap">
+    <nav aria-label="Sections">
+      <a href="#warning">Warning issued</a>
+      <a href="#kit">Kit list</a>
+      <a href="#grab-bag">Grab bags</a>
+      <a href="#pets">Pets</a>
+      <a href="#upkeep">Upkeep</a>
+      <a href="#safety">Safety</a>
+      <a href="#my-plan">My plan</a>
+      <a href="#contacts">Contacts</a>
+    </nav>
+  </div>
+</div>
+
+<main class="wrap">
+
+<!-- WARNING -->
+<section data-view="warning">
+  <div>
+    <h2>A severe weather warning is out</h2>
+    <p class="lead">Work down the list. Your ticks are saved, and you can clear them once the storm has passed.</p>
+  </div>
+  <div class="callout"><b>Get warnings:</b> check the Bureau of Meteorology, keep ABC Radio Brisbane (612 AM) on, and sign up for free Brisbane Severe Weather Alerts if you live in Brisbane. Links are on the Contacts tab.</div>
+  <div id="warnLists"></div>
+  <div><button class="btn" type="button" id="resetWarn">Clear all ticks</button></div>
+</section>
+
+<!-- KIT -->
+<section data-view="kit" hidden>
+  <div>
+    <h2>Kit list</h2>
+    <p class="lead">Everything to stay home for 3 days without power, water or shops, building up to 14 days. Quantities are for 2 adults, so scale for your household. Water comes first, then food, light and power, and medical. Items marked <span class="tag start" style="margin:0">Start here</span> are cheap and give the most value.</p>
+  </div>
+
+  <div class="panel">
+    <h3>How much water to store</h3>
+    <div class="calc" style="margin-top:10px">
+      <div class="field"><label for="wPeople">People</label><input id="wPeople" type="number" min="1" max="20" value="2" inputmode="numeric"></div>
+      <div class="field"><label for="wPets">Small pets</label><input id="wPets" type="number" min="0" max="10" value="1" inputmode="numeric"></div>
+      <div class="field"><label for="wDays">Days</label><select id="wDays"><option value="3">3 days</option><option value="7">7 days</option><option value="14">14 days</option></select></div>
+      <div class="calc-out" id="wOut" aria-live="polite">30<small>litres</small></div>
+    </div>
+    <p class="small muted" style="margin-top:10px">Uses 5 L per person per day for drinking, cooking and a basic wash, and about 0.5 L a day for a small dog in summer. Get Ready Queensland's minimum is 10 L per person for 3 days, so this plans above it. Fill the bathtub too when a warning comes, for flushing.</p>
+  </div>
+
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Kit size">
+      <button type="button" data-days="72" aria-pressed="true">72 hours</button>
+      <button type="button" data-days="14" aria-pressed="false">14 days</button>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
+    <label class="toggle"><input type="checkbox" id="hideDone"> Hide items I've ticked</label>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b id="sCount">0 / 0</b><small>items ticked</small><div class="meter"><i id="sMeter"></i></div></div>
+    <div class="stat"><b id="sTotal">$0</b><small id="sTotalLbl">est. cost, 72 hours</small></div>
+    <div class="stat"><b id="sLeft">$0</b><small>still to buy (est.)</small></div>
+  </div>
+
+  <div id="kitList" style="display:flex;flex-direction:column;gap:24px"></div>
+  <p class="small muted">Prices are rough estimates from November 2026. Check before buying. Free items and cash aren't counted in totals.</p>
+</section>
+
+<!-- GRAB BAGS -->
+<section data-view="grab-bag" hidden>
+  <div>
+    <h2>Grab bags</h2>
+    <p class="lead">One bag per person, packed and kept by the door in storm season, so you can leave in five minutes. A waterproof dry-bag backpack works well. Ticks are saved to your account when you're signed in, or in this browser.</p>
+  </div>
+  <div class="grid2" id="bagLists"></div>
+  <div class="callout">Don't leave lithium gear (power banks, jump starters) or medicines in a parked car over summer. The cabin can pass 60°C. Keep the car kit in a tub in the garage and load it when a warning is issued.</div>
+  <div><button class="btn" type="button" id="resetBag">Clear all ticks</button></div>
+</section>
+
+<!-- PETS -->
+<section data-view="pets" hidden>
+  <div>
+    <h2>Pets</h2>
+    <p class="lead">Get Ready Queensland says to keep at least 5 days of food and water for each pet, and to plan where they go if you have to leave. Evacuation centres may not take pets unless they're assistance animals.</p>
+  </div>
+  <div class="grid2">
+    <div class="panel"><h3>Before the season</h3><ul class="checks" id="petBefore"></ul></div>
+    <div class="panel"><h3>When a warning is issued</h3><ul class="checks" id="petWarn"></ul></div>
+  </div>
+  <div class="callout">Paralysis ticks are bad around Brisbane after wet weather. Keep tick prevention up to date through storm season.</div>
+  <p class="small"><a href="https://www.getready.qld.gov.au/pets" target="_blank" rel="noopener">Get Ready Queensland: protect your pet</a></p>
+</section>
+
+<!-- UPKEEP -->
+<section data-view="upkeep" hidden>
+  <div>
+    <h2>Upkeep</h2>
+    <p class="lead">A kit only works if it's fresh and charged. Enter the date you last did each job and this page shows what's due. Dates are saved just for you.</p>
+  </div>
+  <div class="callout"><b>Pre-season check:</b> storm season in South-East Queensland runs from about October to April. Do a full kit check every September, and again mid-season.</div>
+  <div class="panel" id="upList"></div>
+</section>
+
+<!-- SAFETY -->
+<section data-view="safety" hidden>
+  <div>
+    <h2>Safety</h2>
+    <p class="lead">Most storm injuries happen after the storm, during clean-up and in floodwater. These are the ones that matter most.</p>
+  </div>
+  <div class="panel">
+    <ul class="rules">
+      <li><div><strong>If it's flooded, forget it.</strong><span>Never drive, walk, ride or let kids play in floodwater. 15 cm of fast water can knock you over and 30 cm can float a car. Floodwater also carries sewage, chemicals and snakes.</span></div></li>
+      <li><div><strong>Stay 8 metres from fallen power lines.</strong><span>Treat every fallen line as live. Call 000, or Energex on 13 19 62 in South-East Queensland.</span></div></li>
+      <li><div><strong>Gas stoves, heaters and generators go outside.</strong><span>Butane stoves, BBQs and generators make carbon monoxide, which you can't smell. Use them outdoors or with doors and windows wide open, never in a closed room, garage or tent.</span></div></li>
+      <li><div><strong>Lanterns, not candles.</strong><span>Battery or rechargeable LED lights are much safer during a blackout.</span></div></li>
+      <li class="amber"><div><strong>Store fuel carefully.</strong><span>Keep butane canisters and fuel in a cool, ventilated spot away from the house's ignition sources. Don't store petrol indoors. Keep a fire extinguisher and fire blanket handy.</span></div></li>
+      <li class="amber"><div><strong>Heat is a hazard too.</strong><span>Power often stays off in hot, humid weather after a storm. Drink water, use battery fans, rest in the coolest room, and check on older neighbours.</span></div></li>
+      <li class="amber"><div><strong>When in doubt, throw it out.</strong><span>Fridge food that has sat above 5°C for more than about 4 hours should be thrown out. A full freezer stays cold for longer if you keep the door shut. Freeze bottles of water before a storm.</span></div></li>
+      <li class="amber"><div><strong>Clean up with care.</strong><span>Wear gloves, closed shoes and a P2 mask around mud and mould. Get electrics checked by a licensed electrician before switching back on anything that got wet.</span></div></li>
+      <li class="amber"><div><strong>Solar doesn't work in a blackout on its own.</strong><span>Grid-connected solar switches off when the grid goes down, unless you have a battery set up for backup.</span></div></li>
+    </ul>
+  </div>
+</section>
+
+<!-- MY PLAN -->
+<section data-view="my-plan" hidden>
+  <div>
+    <h2>My household plan</h2>
+    <p class="lead">Fill this in for your own household. Only you can see it. When you're signed in it's saved to your private account; otherwise it stays in this browser. Then copy it and keep a paper copy in each grab bag, because phones go flat.</p>
+  </div>
+  <form class="panel" id="planForm" autocomplete="off">
+    <div class="plan-grid">
+      <div class="field"><label for="p_contact">Out-of-area contact (name, phone)</label><input id="p_contact" name="Out-of-area contact"></div>
+      <div class="field"><label for="p_meet">Meeting place if we're split up</label><input id="p_meet" name="Meeting place"></div>
+      <div class="field"><label for="p_evac">Where we'd go if we leave</label><input id="p_evac" name="Where we'd go"></div>
+      <div class="field"><label for="p_pet">Who takes the pet</label><input id="p_pet" name="Pet carer"></div>
+      <div class="field"><label for="p_vet">Vet (phone) and microchip number</label><input id="p_vet" name="Vet and microchip"></div>
+      <div class="field"><label for="p_gp">GP and pharmacy (phone)</label><input id="p_gp" name="GP and pharmacy"></div>
+      <div class="field"><label for="p_ins">Home insurer and policy number</label><input id="p_ins" name="Insurer and policy"></div>
+      <div class="field"><label for="p_flood">Our flood risk (from council flood map)</label><input id="p_flood" name="Flood risk"></div>
+      <div class="field wide"><label for="p_neigh">Neighbours to check on</label><input id="p_neigh" name="Neighbours to check on"></div>
+      <div class="field wide"><label for="p_meds">Medicines and medical needs</label><textarea id="p_meds" name="Medicines and medical needs" rows="3"></textarea></div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px">
+      <button class="btn primary" type="button" id="copyPlan">Copy plan as text</button>
+      <button class="btn" type="button" id="clearPlan">Clear the form</button>
+      <span class="status" id="planStatus" aria-live="polite"></span>
+    </div>
+    <textarea id="planFallback" rows="8" hidden readonly style="margin-top:12px;width:100%;font:inherit;font-size:.85rem;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--bg);color:var(--ink)"></textarea>
+  </form>
+  <p class="small muted">Get Ready Queensland has a printable household plan template: <a href="https://getready.qld.gov.au/sites/default/files/2024-10/GRQ%20Household%20Severe%20Weather%20Emergency%20Plan.pdf" target="_blank" rel="noopener">Household Severe Weather Emergency Plan (PDF)</a>.</p>
+</section>
+
+<!-- CONTACTS -->
+<section data-view="contacts" hidden>
+  <div>
+    <h2>Contacts and warnings</h2>
+    <p class="lead">Numbers are shown as text so you can copy them. Write them on paper too.</p>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <h3>Phone</h3>
+      <div class="contact"><b>000</b><span>Life-threatening emergency: police, fire, ambulance</span></div>
+      <div class="contact"><b>132 500</b><span>SES: storm damage, flooding, fallen trees on the house</span></div>
+      <div class="contact"><b>13 19 62</b><span>Energex: power outages and fallen lines in South-East Queensland</span></div>
+      <div class="contact"><b>131 444</b><span>Policelink: non-urgent police matters</span></div>
+      <div class="contact"><b>13 43 25 84</b><span>13 HEALTH: nurse advice, 24/7</span></div>
+    </div>
+    <div class="panel">
+      <h3>Warnings and information</h3>
+      <ul class="links">
+        <li><a href="https://www.bom.gov.au/qld/warnings/" target="_blank" rel="noopener">Bureau of Meteorology: Queensland warnings</a><span>Official storm, cyclone and flood warnings</span></li>
+        <li><a href="https://bswa.brisbane.qld.gov.au/register" target="_blank" rel="noopener">Brisbane Severe Weather Alert</a><span>Free alerts by SMS, email or phone for Brisbane addresses</span></li>
+        <li><a href="https://www.brisbane.qld.gov.au/community-support-and-safety/natural-disasters-and-emergencies/flooding-in-brisbane/flood-maps-and-reports" target="_blank" rel="noopener">Brisbane flood maps and FloodWise reports</a><span>Check flood risk for your exact address</span></li>
+        <li><a href="https://www.getready.qld.gov.au/emergencykit" target="_blank" rel="noopener">Get Ready Queensland: emergency kit</a><span>The state's official kit checklist</span></li>
+        <li><a href="https://www.health.qld.gov.au/public-health/disaster/public-health-advice/get-ready" target="_blank" rel="noopener">Queensland Health: get ready</a><span>Medicines, food and water safety</span></li>
+        <li><a href="https://www.ses.qld.gov.au/" target="_blank" rel="noopener">Queensland SES</a><span>Request help online and storm safety advice</span></li>
+        <li><a href="https://www.energex.com.au/" target="_blank" rel="noopener">Energex</a><span>Outage map and updates</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout">Outside Brisbane? Most SEQ councils (Moreton Bay, Logan, Ipswich, Redland, Gold Coast, Sunshine Coast) run their own disaster dashboard and alert sign-up. Search your council's name with "disaster dashboard".</div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Based on Get Ready Queensland, Queensland Health, Brisbane City Council and SES guidance. Items such as freeze-dried meals, a portable power station and a water filter go beyond the official minimum and are marked optional.</p>
+    <p>Kit list last updated 25 November 2026 (heat items added). Prices are estimates; always follow official warnings and emergency services on the day.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+(function(){
+"use strict";
+/* ---------- state: saved to the viewer's own account when possible, always cached on this device ---------- */
+const PFX="ssk:";
+const SYNCED=["kit","warn0","warn1","warn2","bag0","bag1","petB","petW","upkeep","plan","water"];
+function lsGet(k,d){try{const v=localStorage.getItem(PFX+k);return v==null?d:JSON.parse(v)}catch(e){return d}}
+function lsSet(k,v){try{localStorage.setItem(PFX+k,JSON.stringify(v))}catch(e){}}
+let state=lsGet("state",null);
+if(!state||typeof state!=="object"){state={};SYNCED.forEach(k=>{const v=lsGet(k,undefined);if(v!==undefined)state[k]=v})}
+const isSynced=k=>SYNCED.includes(k);
+function load(k,d){if(isSynced(k)){const v=state[k];return v===undefined?d:JSON.parse(JSON.stringify(v))}return lsGet(k,d)}
+function save(k,v){if(isSynced(k)){state[k]=v;state._at=Date.now();lsSet("state",state);queueRemote()}else lsSet(k,v)}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const money=n=>"$"+Math.round(n).toLocaleString("en-AU");
+const focused=el=>document.activeElement===el;
+
+/* sync status line */
+const syncEl=document.getElementById("syncNote");
+const SYNC_TEXT={
+  local:["device","Your ticks and plan are saved in this browser on this device. Sign in to keep them on all your devices."],
+  connecting:["busy","Connecting to your account…"],
+  account:["ok","Saved to your account. Sign in on any device to see your list. Only you can see it."],
+  noaccess:["device","Saved on this device only. Try signing out and in again to save to your account."],
+  offline:["busy","Can't reach your account right now. Changes are kept on this device and will sync when it's back."],
+  error:["device","Couldn't save to your account just now. Changes are kept on this device and will sync on your next change."]
+};
+function setSync(m){const t=SYNC_TEXT[m];if(!t||!syncEl)return;syncEl.dataset.state=t[0];syncEl.textContent=t[1]}
+setSync("local");
+
+let ref=null,remoteOK=false,writing=false,dirty=false,timer=null,retried=false;
+function queueRemote(){if(!ref||!remoteOK)return;dirty=true;clearTimeout(timer);timer=setTimeout(flush,800)}
+async function flush(){
+  if(writing||!dirty||!remoteOK)return;writing=true;dirty=false;
+  try{await ref.set(JSON.parse(JSON.stringify(state)));retried=false;setSync("account")}
+  catch(e){const c=e&&e.code;
+    if(c==="unavailable"&&!retried){retried=true;dirty=true;setTimeout(flush,1000+Math.random()*1500)}
+    else if(c==="invalid_argument"||c==="revoked"||c==="not_granted"||c==="capability_disabled"||c==="capability_removed"||c==="transform_error"){remoteOK=false;setSync("noaccess")}
+    else{retried=false;setSync("error")}}
+  finally{writing=false;if(dirty&&remoteOK&&!retried){clearTimeout(timer);timer=setTimeout(flush,800)}}
+}
+function applyRemote(r){const next=JSON.parse(JSON.stringify(r||{}));state=next;lsSet("state",state);renderAll()}
+
+async function connect(){
+  if(!window.claude||typeof window.claude.use!=="function")return;
+  let db=null,user=null;
+  try{[db,user]=await Promise.all([window.claude.use("db"),window.claude.use("user")])}catch(e){return}
+  if(!db||!user)return;
+  const id=await user.id();
+  if(!id)return;
+  const may=await user.can("data.write");
+  if(may===false){setSync("noaccess");return}
+  try{ref=db.doc("data/users/"+id+"/state")}catch(e){return}
+  setSync("connecting");
+  const slow=setTimeout(()=>{if(!remoteOK)setSync("offline")},10000);
+  ref.onSnapshot(snap=>{
+    if(snap.metadata.hasPendingWrites)return;
+    const r=snap.exists?snap.data():null;
+    const remoteAt=(r&&r._at)||0, localAt=state._at||0;
+    if(r&&remoteAt>localAt)applyRemote(r);
+    if(!snap.metadata.fromCache&&!remoteOK){
+      clearTimeout(slow);remoteOK=true;setSync("account");
+      if(localAt>remoteAt)queueRemote();
+    }
+  },()=>{clearTimeout(slow);remoteOK=false;setSync("error")});
+}
+connect();
+
+/* ---------- views ---------- */
+const VIEWS=["warning","kit","grab-bag","pets","upkeep","safety","my-plan","contacts"];
+function show(){
+  const h=location.hash.replace("#","");const v=VIEWS.includes(h)?h:"warning";
+  document.querySelectorAll("section[data-view]").forEach(s=>s.hidden=s.dataset.view!==v);
+  document.querySelectorAll(".tabs a").forEach(a=>{if(a.getAttribute("href")==="#"+v)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  const cur=document.querySelector('.tabs a[aria-current="page"]');if(cur&&cur.scrollIntoView)cur.scrollIntoView({block:"nearest",inline:"nearest"});
+}
+window.addEventListener("hashchange",()=>{show();window.scrollTo(0,0)});
+show();
+
+/* ---------- generic checklist ---------- */
+function renderChecklist(ul,key,items){
+  const st=load(key,{});
+  ul.innerHTML=items.map((it,i)=>{const id=key+"-"+i;const [t,s]=Array.isArray(it)?it:[it,""];
+    return `<li><label class="check" for="${id}"><input type="checkbox" id="${id}" data-ck="${key}" data-i="${i}" ${st[i]?"checked":""}><span class="t"><strong>${esc(t)}</strong>${s?`<span>${esc(s)}</span>`:""}</span></label></li>`}).join("");
+}
+document.addEventListener("change",e=>{const t=e.target;const k=t&&t.dataset&&t.dataset.ck;if(!k)return;
+  const s=load(k,{});if(t.checked)s[t.dataset.i]=true;else delete s[t.dataset.i];save(k,s);if(k.startsWith("warn"))warnCounts()});
+
+/* ---------- warning issued ---------- */
+const WARN=[
+ ["Before the storm",[
+  ["Check the warning and keep the radio on","Bureau of Meteorology warnings, ABC Radio Brisbane 612 AM."],
+  ["Fill water containers and the bathtub","Collapsible containers too. The bath water is for flushing and washing."],
+  ["Freeze bottles of water and turn the fridge colder","They keep food cold in a blackout and become drinking water."],
+  ["Charge phones, power banks, torches and any power station",""],
+  ["Fill the car to at least half a tank and load the car kit","Park under cover, away from trees and power lines."],
+  ["Secure or bring in outdoor furniture, bins, trampolines and toys",""],
+  ["Clear gutters and drains if it's safe",""],
+  ["Bring pets inside with their ID tag on",""],
+  ["Put grab bags, shoes and keys by the door",""],
+  ["Unplug computers and TVs","Protects them from power surges."],
+  ["Check on neighbours who may need help",""]]],
+ ["During the storm",[
+  ["Stay inside, away from windows","Shelter in the smallest, strongest room if it gets severe."],
+  ["Don't use a corded landline in lightning",""],
+  ["Follow any evacuation advice straight away","Take grab bags and pets."],
+  ["Never drive, walk or ride through floodwater","If it's flooded, forget it."]]],
+ ["After the storm",[
+  ["Keep listening for warnings","A second storm or rising water can follow."],
+  ["Stay well away from fallen power lines","At least 8 m. Call 000 or Energex 13 19 62."],
+  ["Check food safety before eating fridge food",""],
+  ["Photograph damage before cleaning up","For your insurer."],
+  ["Call the SES on 132 500 for help with damage",""],
+  ["Run stoves and generators outdoors only","Carbon monoxide risk."]]]
+];
+const wl=document.getElementById("warnLists");
+wl.innerHTML=WARN.map((p,i)=>`<div class="panel phase"><div class="phase-head"><h3>${esc(p[0])}</h3><small class="muted" id="wc${i}"></small></div><ul class="checks" id="wl${i}"></ul></div>`).join("");
+function renderWarn(){WARN.forEach((p,i)=>renderChecklist(document.getElementById("wl"+i),"warn"+i,p[1]));warnCounts()}
+function warnCounts(){WARN.forEach((p,i)=>{const s=load("warn"+i,{});const n=Object.values(s).filter(Boolean).length;document.getElementById("wc"+i).textContent=n+" of "+p[1].length+" done"})}
+document.getElementById("resetWarn").addEventListener("click",()=>{WARN.forEach((p,i)=>save("warn"+i,{}));renderWarn()});
+
+/* ---------- kit data (snapshot of the household Sheet) ---------- */
+// [category, name, qty72, qty14, cost72, cost14, where, [label,url] or null, note, flag] flag: "start" | "opt"
+const K=[
+["Water","20 L food-grade water jerry cans with tap","2","7",60,210,"Bunnings, BCF, Anaconda",["BCF Icon 20 L water carrier","https://www.bcf.com.au/p/icon-water-carrier-with-bung-20l/374242.html"],"About 140 L for 14 days, which is 5 L per person per day. Fill from the tap, write the date on them and refresh every 6 months.","start"],
+["Water","Bottled water slab (24 × 600 mL)","1","2",8,16,"Woolworths, Coles, Aldi",null,"For grab bags and day one. Keep unopened.","start"],
+["Water","Collapsible 20 L water containers","—","2",0,30,"Bunnings, BCF",["BCF Wanderer 20 L collapsible","https://bcf.com.au/p/wanderer-collapsible-water-container-20l/389698.html"],"Store flat and fill when a severe weather warning is issued.",""],
+["Water","Water purification tablets","1 pack","2 packs",15,30,"BCF, Anaconda, chemist",["Aquatabs 50 (Chemist Warehouse)","https://www.chemistwarehouse.com.au/buy/61436/aquatabs-water-purification-50-tablets"],"Backup if stored water runs low or a boil-water notice is issued.",""],
+["Water","Portable water filter (squeeze or straw type)","—","1",0,70,"Anaconda, BCF, online",["Sawyer Squeeze (Macpac)","https://www.macpac.com.au/sawyer-point-one-squeeze-water-filtration-system/116404.html"],"A second line of defence for a long outage.","opt"],
+["Food","Canned fish (tuna or salmon, ~95 g tins)","8 tins","~34 tins",20,75,"Supermarket",null,"Food quantities follow the Queensland Government emergency pantry list for 2 people, doubled for 14 days. Buy what you already eat and rotate it into normal meals.",""],
+["Food","Canned meat or chicken (or plant-based)","3 tins","1.8 kg",15,45,"Supermarket",null,"",""],
+["Food","Canned vegetables (mixed, corn, potatoes, beetroot)","8 cans","25–30 cans",12,45,"Supermarket",null,"Ring-pull where possible.",""],
+["Food","Baked beans and canned legumes","4 cans","9 cans",6,15,"Supermarket",null,"",""],
+["Food","Canned fruit in juice","4 cans","12 cans",8,30,"Supermarket",null,"",""],
+["Food","Ready-to-eat rice or noodle pouches","4","13 pouches",10,35,"Supermarket",null,"Can be eaten without heating.",""],
+["Food","Crispbread or dry crackers","1 box","1 kg",4,12,"Supermarket",null,"",""],
+["Food","Long-life wraps or flatbread","1 pack","4 packs",4,16,"Supermarket",null,"Shorter shelf life, so check dates each season.",""],
+["Food","Breakfast cereal or muesli","1 box","3 boxes",6,18,"Supermarket",null,"",""],
+["Food","UHT long-life milk (1 L)","2","10",4,18,"Supermarket",null,"",""],
+["Food","Long-life custard or puddings","2","1.6 kg",3,10,"Supermarket",null,"",""],
+["Food","Nuts, seeds and dried fruit","1 bag each","900 g nuts, 400 g fruit",10,30,"Supermarket, Aldi",null,"",""],
+["Food","Snacks, muesli bars, chocolate, tea, coffee, sugar","Some","2 weeks' worth",15,40,"Supermarket",null,"Morale matters on day six without power.",""],
+["Food","Freeze-dried meals","—","6 meals",0,90,"BCF, Anaconda, Bunnings",["Back Country Cuisine roast chicken (BCF)","https://www.bcf.com.au/p/back-country-cuisine-freeze-dried-roast-chicken-2-serve/621672.html"],"About 4-year best-before; just add boiling water.","opt"],
+["Cooking","Butane camp stove","1","1",30,30,"Bunnings, BCF, Kmart",["Gasmate butane stove (Bunnings)","https://www.bunnings.com.au/gasmate-butane-stove_p1030412"],"Use outdoors or somewhere well ventilated only, never indoors with doors shut (carbon monoxide).",""],
+["Cooking","Butane gas canisters","4","14",12,40,"Bunnings, BCF, Kmart",["Butane 220 g canister (Bunnings)","https://www.bunnings.com.au/butane-power-gas-220g-bayonet-with-prv_p0729077"],"Rough rule: about 1 canister a day for 2 people.",""],
+["Cooking","Manual can opener","1","1",5,5,"Supermarket, Kmart",["Kmart can opener","https://www.kmart.com.au/product/can-opener/2470367"],"Easy to forget and essential.","start"],
+["Cooking","Disposable plates, bowls, cups, cutlery","3 days","2 weeks",10,25,"Supermarket, Kmart",null,"Saves washing water.",""],
+["Cooking","Waterproof matches and lighters","1 set","1 set",6,6,"BCF, supermarket",["Elemental waterproof matches (BCF)","https://www.bcf.com.au/p/elemental-wind-and-waterproof-matches/225272.html"],"",""],
+["Cooking","Large esky and ice bricks","1","1",40,40,"Kmart, BCF",["Kmart 50 L cooler","https://www.kmart.com.au/product/50l-high-performance-cooler-43751891/"],"Before a storm, freeze bottles of water to fill the freezer. Check you actually have ice bricks and keep them in the freezer all summer, not in the cupboard.",""],
+["Cooking","Hand sanitiser, dish liquid, paper towel","Some","2 weeks",8,20,"Supermarket",null,"",""],
+["Light & power","Head torches","2","2",20,20,"Kmart, Bunnings",["Kmart LED headlight","https://www.kmart.com.au/product/led-headlight-43088973"],"Hands-free beats a torch.","start"],
+["Light & power","LED lanterns (battery or rechargeable)","2","2",30,30,"Kmart, Bunnings, BCF",["Kmart rechargeable LED camp light","https://www.kmart.com.au/product/led-camp-light-rechargeable-large-42965749"],"Much safer than candles.",""],
+["Light & power","AA and AAA batteries (bulk packs)","1 pack each","2 packs each",20,40,"Bunnings, Costco, Aldi",["Energizer AA 20-pack (Bunnings)","https://www.bunnings.com.au/energizer-max-aa-batteries-20-pack_p0313139"],"Match them to your torches, lanterns and radio.","start"],
+["Light & power","Battery or hand-crank AM/FM radio","1","1",40,40,"JB Hi-Fi, Bunnings, BCF",["Wanderer crank torch and radio (BCF)","https://www.bcf.com.au/p/wanderer-radar-4-in-1-emergency-crank-torch-and-radio/713834.html"],"ABC Radio Brisbane (612 AM) is the emergency broadcaster. It works when mobiles and internet don't. Write \"ABC 612 AM\" on tape on the back, and keep spare batteries in a bag next to it.","start"],
+["Light & power","Power banks (20,000 mAh) and cables","2","2",80,80,"Officeworks, JB Hi-Fi",["Anker 20,000 mAh (Officeworks)","https://www.officeworks.com.au/shop/officeworks/p/anker-20-000-mah-powerbank-30w-black-ankerpb20k"],"Keep them charged and top up monthly.","start"],
+["Light & power","Car USB phone charger","1","1",10,10,"Kmart, Officeworks",["Kmart dual USB car charger","https://www.kmart.com.au/product/dual-usb-48w-car-charger-43396511/"],"",""],
+["Light & power","Rechargeable or battery fan","1","2",30,60,"Kmart, Big W",["Kmart 20 cm rechargeable fan","https://www.kmart.com.au/product/20cm-rechargeable-desktop-fan-43711376/"],"Heat and humidity with no air-con after a storm is a real problem.",""],
+["Light & power","Solar garden stake lights (blackout night lights)","4","4",16,16,"Kmart, Bunnings",["Kmart solar stake light","https://www.kmart.com.au/product/solar-stake-light-43562954"],"Estimate: about $3–5 each. Leave them in the garden to charge; in a blackout bring them in for the hallway, bathroom and bedroom. Not bright enough to read by, but free to run.","start"],
+["Light & power","Portable power station (500–1,000 Wh) and folding solar panel","—","1",0,900,"JB Hi-Fi, Bunnings, online",["EcoFlow Delta 3 Plus (JB Hi-Fi)","https://www.jbhifi.com.au/products/ecoflow-delta-3-plus-1800w-power-station-with-1024wh-85ah12v-capacity"],"The biggest single upgrade for 14 days: runs lights, phones, a fan and the modem, and recharges from the sun.","opt"],
+["Light & power","Home battery with blackout (backup) mode","—","Quote",null,null,"Your solar installer",["Battery rebate changes (Clean Energy Regulator)","https://cer.gov.au/news-and-media/media/2026/march/battery-rebates-are-changing-1-may-2026"],"Only if you have or are getting solar. Without a battery set up for backup, grid-connected solar switches off in a blackout. Ask which circuits it powers (fridge, lights, modem, fan).","opt"],
+["Medical & hygiene","First aid kit and first aid manual","1","1",60,60,"Red Cross, St John, chemist",["St John medium kit (Officeworks)","https://officeworks.com.au/shop/officeworks/p/st-john-ambulance-medium-first-aid-95-piece-kit-stho677408"],"","start"],
+["Medical & hygiene","Prescription medicines and copies of scripts","7 days","14 days",null,null,"Your GP and chemist",null,"Queensland Health suggests at least a 7-day supply. Ask your GP about stretching to 14.","start"],
+["Medical & hygiene","Pain relief, antihistamine, antiseptic, rehydration salts","Some","2 weeks",25,40,"Chemist, supermarket",null,"",""],
+["Medical & hygiene","Toilet paper","1 pack","+1 big pack",10,15,"Supermarket",null,"",""],
+["Medical & hygiene","Wet wipes, soap, toothpaste, deodorant, dry shampoo","Some","2 weeks",15,30,"Supermarket, chemist",null,"Wipes stretch water a long way.",""],
+["Medical & hygiene","Insect repellent and sunscreen","1 each","2 each",15,30,"Supermarket, chemist",null,"Mosquitoes surge after heavy rain and flooding.",""],
+["Medical & hygiene","Spray bottles for misting (heat)","2","2",6,6,"Kmart, supermarket",["Kmart 300 mL misting bottle","https://www.kmart.com.au/product/300ml-misting-cleaning-bottle-43532926"],"Estimate: about $2–3 each. New bottles only, never ones that held chemicals. Keep them filled in the fridge in storm season and mist face, neck and arms in front of a fan when the power is out.","start"],
+["Medical & hygiene","Cooling towels","2","2",16,16,"Kmart, BCF, Anaconda",["Kmart cooling towel","https://www.kmart.com.au/product/cooling-towel-assorted-43474950"],"Estimate: about $8 each. A wet tea towel does most of the job. Know the heat-stroke signs (confusion, slurred speech, hot dry skin, stopped sweating): call 000, get them into shade and cool them.",""],
+["Medical & hygiene","Emergency toilet: 20 L bucket with lid, heavy-duty bags, kitty litter","—","1 kit",0,40,"Bunnings",["Bunnings 20 L pail","https://www.bunnings.com.au/handy-pail-20l-round-pail_p0909257"],"For if sewerage fails or toilets can't flush.",""],
+["Medical & hygiene","P2 masks and nitrile gloves","1 box each","1 box each",15,15,"Bunnings, chemist",["Citeco P2 respirators (Bunnings)","https://www.bunnings.com.au/citeco-p2-respirator-10-pack_p0436247"],"For clean-up, mud and mould.",""],
+["Pet","Extra water for a small dog","3 L","8 L",5,5,"Supermarket (10 L cask)",null,"A 5 kg dog drinks about 0.3 L a day, more in heat. Keep at least 5 days' worth.",""],
+["Pet","Spare sealed bag of their usual dry food","5 days","14 days",44,44,"Kmart, Petbarn, Petstock, supermarket",null,"Stick to the food they already eat. Open the spare when the current bag runs out, then buy a new spare.",""],
+["Pet","Foldable pet carrier","1","1",27,27,"Kmart",["Kmart foldable pet carrier, small","https://www.kmart.com.au/product/pet-carrier-foldable-small-42302216/"],"Needed for evacuation, friends' places and the vet. Get them used to it before a storm.",""],
+["Pet","Collapsible travel bowls","1","1",5,5,"Kmart",["Kmart twin travel silicone bowl","https://www.kmart.com.au/product/pet-twin-travel-silicone-bowl-43512621/"],"Clip to the grab bag.",""],
+["Pet","Spare lead and collar with ID tag","1 set","1 set",20,20,"Kmart, Petbarn, Petstock",null,"Check the microchip registry has your current phone numbers.",""],
+["Pet","Pet medicines, tick and flea prevention, vet records, recent photo","5 days","14 days",null,null,"Your vet",null,"Put records and a photo of you with your pet in the waterproof document pouch.",""],
+["Pet","Pet cooling mat, small","1","1",20,20,"Kmart, Petbarn, Petstock",["Kmart pet cooling mat, small","https://www.kmart.com.au/product/pet-cooling-mat-small-tie-dye-43554669"],"Estimate: about $15–25. A pressure-activated gel mat needs no power, for hot blackout nights. Plus plenty of water and shade. Goes beyond the official checklist.",""],
+["Pet","Poo bags, puppy pads, old towel or blanket, favourite toy","Pack","Pack",15,15,"Kmart, supermarket",null,"Puppy pads help when it's too wild to go outside. A familiar blanket settles an anxious pet.",""],
+["Tools & home","Heavy-duty tarps (~3.6 × 4.8 m)","2","2",40,40,"Bunnings",["Polytuf heavy duty tarp (Bunnings)","https://www.bunnings.com.au/polytuf-3-6-x-4-9m-extra-heavy-duty-d-ring-tarpaulin_p3330130"],"Temporary cover for roof or window damage.",""],
+["Tools & home","Rope, occy straps, cable ties","1 set","1 set",20,20,"Bunnings",null,"",""],
+["Tools & home","Duct tape","2 rolls","2 rolls",15,15,"Bunnings",null,"",""],
+["Tools & home","Work gloves and safety glasses","2 each","2 each",25,25,"Bunnings",null,"",""],
+["Tools & home","Utility knife, multi-tool, whistle","1 each","1 each",30,30,"Bunnings, BCF",null,"",""],
+["Tools & home","Heavy-duty garbage bags and ties","1 roll","2 rolls",10,15,"Supermarket, Bunnings",null,"",""],
+["Tools & home","Fire extinguisher and fire blanket","1 each","1 each",50,50,"Bunnings",["Fire Pro extinguisher and blanket kit (Bunnings)","https://www.bunnings.com.au/fire-pro-extinguisher-and-blanket-fire-safety-kit_p0171735"],"Worth having with gas stoves and lanterns in use.",""],
+["Tools & home","Sandbags","If needed","If needed",null,null,"Free from council sandbag depots",null,"Check your council flood map for your address first.",""],
+["Documents & storage","Waterproof document pouch and USB backup","1","1",25,25,"Officeworks",["Aqua Drops A4 document wallet (Officeworks)","https://www.officeworks.com.au/shop/officeworks/p/aqua-drops-zip-open-document-wallet-a4-blue-aqf5303be"],"Insurance, IDs, scripts, bank details and emergency contacts.","start"],
+["Documents & storage","Cash in small notes","$200","$500",null,null,"Bank or ATM",null,"Card payments go down with the power. Not counted in totals.","start"],
+["Documents & storage","Medical info card and backup bank card","1 each","1 each",null,null,"Free: write your own",null,"For each person: allergies, medicines, conditions, GP and emergency contact. Add your pet's microchip number and vet.",""],
+["Documents & storage","Spare house and car keys","1 set","1 set",10,10,"Key cutting kiosk",null,"Keep them in the grab bag.",""],
+["Documents & storage","Zip-lock bags (assorted)","1 box","1 box",4,4,"Supermarket",null,"Keeps phones, medicines and pet food dry.",""],
+["Documents & storage","Heavy-duty storage tubs with lids (~70 L)","2","4",40,80,"Bunnings, Kmart",["Ezy Storage 80 L waterproof tub (Bunnings)","https://www.bunnings.com.au/ezy-storage-80l-bunker-tough-heavy-duty-waterproof-ip65-container_p0374592"],"Your garage kit boxes. Tape the checklist to the lid. Keep them off the floor if there's any flood risk.",""],
+["Documents & storage","Video of every room and its contents (for insurance)","1","1",null,null,"Free: your phone",null,"Film each room, cupboards and serial numbers. Save it to the cloud and the USB backup. Redo once a year.","start"],
+["Documents & storage","Change of clothes, rain jacket, sturdy closed shoes","Pack","Pack",null,null,"Already own",null,"One set in each grab bag.",""],
+["Plans","Household emergency plan and paper contact list","1","1",null,null,"Free (Get Ready QLD template)",["Get Ready QLD household plan (PDF)","https://getready.qld.gov.au/sites/default/files/2024-10/GRQ%20Household%20Severe%20Weather%20Emergency%20Plan.pdf"],"Phones go flat, so write the numbers down. A copy goes in each grab bag. The My plan tab helps you fill it in.","start"],
+["Plans","Check your address on the council flood map","Check","Check",null,null,"Free",["Brisbane flood maps and FloodWise reports","https://www.brisbane.qld.gov.au/community-support-and-safety/natural-disasters-and-emergencies/flooding-in-brisbane/flood-maps-and-reports"],"Covers creek, river and overland-flow flooding for your block. Do this before buying sandbags or deciding where to store the kit.","start"],
+["Plans","Monthly kit check (first Sunday) and after any severe weather warning","Monthly","Monthly",null,null,"Free",null,"Charge power banks and the jump starter, test the radio and torches, check batteries haven't leaked, put ice bricks back in the freezer, leave solar lights in the sun, and check food, medicine and water dates. About 10 minutes.",""],
+["Plans","Pet evacuation plan","Plan","Plan",null,null,"Free",["Get Ready QLD: protect your pet","https://www.getready.qld.gov.au/pets"],"Agree a friend or family member outside your area who can take your pet, and note pet-friendly motels.",""],
+["Car kit","Portable jump starter","1","1",null,null,"Supercheap Auto, BCF, Repco",null,"Doubles as a phone charger. Don't leave it in a parked car over summer; keep it in a garage tub and load it when a warning is issued. Top up every 3 months.",""],
+["Car kit","Emergency foil blankets","2","2",8,8,"BCF, Anaconda, chemist",["OZtrail emergency blanket (BCF)","https://www.bcf.com.au/p/oztrail-emergency-blanket/394836.html"],"For anyone wet or in shock, not just cold.",""],
+["Car kit","Long-shelf-life ration bars (5-year)","2 packs","2 packs",30,30,"Online prepper shops",null,"Heat-stable, unlike muesli bars and chocolate, so they can live in the car. Check the use-by each spring.",""],
+["Car kit","Paper map of South-East Queensland","1","1",16,16,"BCF, Supercheap Auto",["Hema South East Qld map (BCF)","https://www.bcf.com.au/p/hema-south-east-qld-map/608430.html"],"For detours around flooded roads when mobiles are down. Also download SEQ for offline use in your maps app.",""],
+["Car kit","High-vis vest and warning triangle","1","1",null,null,"Supercheap Auto, Bunnings",null,"Keep in the car for breakdowns.",""],
+["Car kit","Keep the fuel tank at least half full","Habit","Habit",null,null,"Free",null,"Servos can't pump fuel in a blackout.",""],
+["Ready-made kits","Pre-made 2-person 72-hour grab bag","1","1",69,69,"Anaconda (online)",["Lifegear 72-hour kit (Anaconda)","https://anacondastores.com/camping-hiking/health-safety/first-aid/lifegear-72-hour-survivalemergency-kit/BP90202138-red"],"Waterproof backpack with blankets, ponchos, first aid, torch and radio. Check what's inside so you don't double-buy.","opt"],
+["Ready-made kits","Civil Defence MRE 2-person ration pack","—","1",0,240,"Aussie Storm Shop (online)",["Civil Defence 2-person kit (Aussie Storm Shop)","https://www.aussiestormshop.com.au/civil-defence-survival-pack-2-person"],"3 days of ration food for 2 adults with heaters and a stove. 3+ year shelf life.","opt"],
+["Other","Cards, books, glow sticks","Some","Some",15,15,"Kmart",null,"",""]
+];
+const CATS=[...new Set(K.map(r=>r[0]))];
+let days=lsGet("days","72"), cat=lsGet("cat","All"), hide=!!lsGet("hide",false);
+let ticks={};
+const kitList=document.getElementById("kitList"), chips=document.getElementById("chips");
+chips.innerHTML=["All",...CATS].map(c=>`<button type="button" class="chip" data-cat="${esc(c)}">${esc(c)}</button>`).join("");
+document.getElementById("hideDone").checked=hide;
+const keyOf=r=>r[0]+"|"+r[1];
+function needed(r){const q=days==="72"?r[2]:r[3];return q!=="—"}
+function renderKit(){
+  ticks=load("kit",{});
+  document.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.days===days)));
+  chips.querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.cat===cat)));
+  const ci=days==="72"?4:5, qi=days==="72"?2:3;
+  const rows=K.filter(needed);
+  let total=0,left=0,done=0;
+  rows.forEach(r=>{const c=r[ci]||0;total+=c;if(ticks[keyOf(r)])done++;else left+=c});
+  document.getElementById("sCount").textContent=done+" / "+rows.length;
+  document.getElementById("sMeter").style.width=(rows.length?done/rows.length*100:0)+"%";
+  document.getElementById("sTotal").textContent=money(total);
+  document.getElementById("sTotalLbl").textContent="est. cost, "+(days==="72"?"72 hours":"14 days");
+  document.getElementById("sLeft").textContent=money(left);
+  const html=CATS.filter(c=>cat==="All"||c===cat).map(c=>{
+    const rs=rows.filter(r=>r[0]===c);if(!rs.length)return "";
+    const d=rs.filter(r=>ticks[keyOf(r)]).length;
+    const shown=rs.filter(r=>!(hide&&ticks[keyOf(r)]));
+    const items=shown.map(r=>{const k=keyOf(r),id="k"+K.indexOf(r),on=!!ticks[k];
+      const cost=r[ci]==null?(/free|own/i.test(r[6])?"Free":"Varies"):money(r[ci]);
+      const tag=r[9]==="start"?'<span class="tag start">Start here</span>':r[9]==="opt"?'<span class="tag opt">Optional</span>':"";
+      const more=(r[8]||r[7])?`<details><summary>Details</summary>${r[8]?`<p>${esc(r[8])}</p>`:""}${r[7]?`<p><a href="${esc(r[7][1])}" target="_blank" rel="noopener">${esc(r[7][0])}</a></p>`:""}</details>`:"";
+      return `<div class="item${on?" done":""}"><input type="checkbox" id="${id}" data-k="${esc(k)}" ${on?"checked":""} aria-label="Got ${esc(r[1])}"><label class="name" for="${id}">${esc(r[1])}${tag}</label><span class="cost">${cost}</span><div class="meta">${esc(r[qi])} · ${esc(r[6])}</div>${more}</div>`}).join("");
+    return `<div class="cat"><div class="cat-head"><h3>${esc(c)}</h3><small>${d} of ${rs.length}</small></div>${items||'<p class="small muted" style="padding:10px 0">All ticked.</p>'}</div>`}).join("");
+  kitList.innerHTML=html;
+}
+kitList.addEventListener("change",e=>{const k=e.target.dataset.k;if(!k)return;const t=load("kit",{});if(e.target.checked)t[k]=true;else delete t[k];save("kit",t);renderKit()});
+document.querySelectorAll(".seg button").forEach(b=>b.addEventListener("click",()=>{days=b.dataset.days;lsSet("days",days);renderKit()}));
+chips.addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;cat=b.dataset.cat;lsSet("cat",cat);renderKit()});
+document.getElementById("hideDone").addEventListener("change",e=>{hide=e.target.checked;lsSet("hide",hide);renderKit()});
+
+/* water calculator */
+const wP=document.getElementById("wPeople"),wPe=document.getElementById("wPets"),wD=document.getElementById("wDays"),wO=document.getElementById("wOut");
+function fillWater(){const w=load("water",null);if(!w)return;if(!focused(wP))wP.value=w.p;if(!focused(wPe))wPe.value=w.pe;if(!focused(wD))wD.value=w.d}
+function calcWater(){const p=Math.max(0,+wP.value||0),pe=Math.max(0,+wPe.value||0),d=+wD.value||3;
+  const l=Math.ceil(p*5*d+pe*0.5*d);wO.innerHTML=l+"<small>litres ("+Math.ceil(l/20)+" × 20 L)</small>"}
+let wT=null;
+[wP,wPe,wD].forEach(el=>el.addEventListener("input",()=>{calcWater();clearTimeout(wT);wT=setTimeout(()=>save("water",{p:wP.value,pe:wPe.value,d:wD.value}),600)}));
+
+/* ---------- grab bags ---------- */
+const BAGS=[
+ ["Each person's bag",[
+  ["Water: 2 × 600 mL bottles",""],["Snacks or ration bars",""],["Head torch with spare batteries",""],
+  ["Power bank and phone cable",""],["Change of clothes, rain jacket, closed shoes",""],
+  ["Medicines for 7 days and copies of scripts",""],["Glasses or contacts",""],
+  ["Toiletries and wet wipes",""],["P2 mask",""],["Paper copy of the household plan and contacts",""]]],
+ ["Shared items (one per household)",[
+  ["Waterproof pouch with documents","Copies of IDs, insurance, bank details, scripts, pet records."],
+  ["Cash in small notes",""],["Spare house and car keys",""],["First aid kit",""],
+  ["Battery or crank radio",""],["Foil blankets",""],["Zip-lock bags",""],["Phone car charger",""]]]
+];
+const bl=document.getElementById("bagLists");
+bl.innerHTML=BAGS.map((b,i)=>`<div class="panel"><h3>${esc(b[0])}</h3><ul class="checks" id="bl${i}"></ul></div>`).join("");
+function renderBags(){BAGS.forEach((b,i)=>renderChecklist(document.getElementById("bl"+i),"bag"+i,b[1]))}
+document.getElementById("resetBag").addEventListener("click",()=>{BAGS.forEach((b,i)=>save("bag"+i,{}));renderBags()});
+
+/* ---------- pets ---------- */
+const PET_B=[
+ ["Check the microchip registry has your current phone numbers",""],
+ ["ID tag on the collar with your mobile number",""],
+ ["Tick, flea and worming treatments up to date",""],
+ ["Get them used to the carrier",""],
+ ["Agree who takes your pet if you have to leave","A friend or family member outside your area, or a pet-friendly motel."],
+ ["Pack 5+ days of food, water and medicines",""],
+ ["Vet records and a photo of you with your pet in the document pouch",""]];
+const PET_W=[
+ ["Bring them inside early","Animals sense storms and can bolt."],
+ ["Keep them in a small room with few or no windows","Use heavy bowls. Never leave them tied up outside."],
+ ["Carrier, lead, bowls and food by the grab bags",""],
+ ["Familiar blanket and a toy to settle them",""],
+ ["Take them with you if you evacuate",""]];
+function renderPets(){renderChecklist(document.getElementById("petBefore"),"petB",PET_B);renderChecklist(document.getElementById("petWarn"),"petW",PET_W)}
+
+/* ---------- upkeep ---------- */
+const UP=[
+ ["Monthly kit check: charge power banks, test radio and torches, check for leaking batteries, ice bricks in the freezer","Every month (first Sunday is easy to remember)",1],
+ ["Film every room and its contents for insurance","Every year",12],
+ ["Top up the jump starter","Every 3 months",3],
+ ["Refresh stored water","Every 6 months",6],
+ ["Check food use-by dates and rotate into meals","Every 6 months",6],
+ ["Check medicine expiry dates and scripts","Every 6 months",6],
+ ["Check batteries and the fire extinguisher gauge","Every 6 months",6],
+ ["Full kit check before storm season","Every September",12],
+ ["Restock the first aid kit","Every year",12],
+ ["Swap grab bag clothes and check ration bar use-by dates","Every year",12],
+ ["Review the household plan, contacts and flood risk","Every year",12],
+ ["Check pet microchip details","Every year",12]
+];
+const upEl=document.getElementById("upList");
+function addMonths(d,m){const x=new Date(d);x.setMonth(x.getMonth()+m);return x}
+const fmt=d=>d.toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"});
+function renderUp(){
+  const upSt=load("upkeep",{});
+  const today=new Date();today.setHours(0,0,0,0);
+  upEl.innerHTML=UP.map((u,i)=>{const v=upSt[i];let pill='<span class="pill unset">Not set</span>';
+    if(v){const due=addMonths(v+"T00:00:00",u[2]);pill=due<=today?`<span class="pill due">Due since ${fmt(due)}</span>`:`<span class="pill ok">Next ${fmt(due)}</span>`}
+    return `<div class="up"><div class="what"><strong>${esc(u[0])}</strong><span>${esc(u[1])}</span></div><div class="when"><label class="small muted" for="up${i}">Last done</label><input type="date" id="up${i}" data-up="${i}" value="${/^\d{4}-\d{2}-\d{2}$/.test(v||"")?v:""}">${pill}</div></div>`}).join("");
+}
+upEl.addEventListener("change",e=>{const i=e.target.dataset.up;if(i==null)return;const s=load("upkeep",{});if(e.target.value)s[i]=e.target.value;else delete s[i];save("upkeep",s);renderUp()});
+
+/* ---------- my plan ---------- */
+const form=document.getElementById("planForm"),pst=document.getElementById("planStatus"),fb=document.getElementById("planFallback");
+const fields=[...form.querySelectorAll("input,textarea")].filter(f=>f.id.startsWith("p_"));
+function fillPlan(){const plan=load("plan",{});fields.forEach(f=>{if(!focused(f))f.value=typeof plan[f.id]==="string"?plan[f.id]:""})}
+let pT=null;
+form.addEventListener("input",()=>{clearTimeout(pT);pT=setTimeout(()=>{const p={};fields.forEach(f=>{if(f.value)p[f.id]=f.value});save("plan",p)},600)});
+function planText(){return "Household emergency plan\n\n"+fields.filter(f=>f.value.trim()).map(f=>f.name+": "+f.value.trim()).join("\n")+"\n\n000 · SES 132 500 · Energex 13 19 62 · ABC Radio Brisbane 612 AM"}
+document.getElementById("copyPlan").addEventListener("click",()=>{const t=planText();
+  const fall=()=>{fb.hidden=false;fb.value=t;fb.focus();fb.select();pst.textContent="Select the text below and copy it."};
+  try{navigator.clipboard.writeText(t).then(()=>{pst.textContent="Copied. Paste it into a note or print it.";fb.hidden=true},fall)}catch(e){fall()}});
+let clearArmed=false;
+document.getElementById("clearPlan").addEventListener("click",e=>{
+  if(!clearArmed){clearArmed=true;e.target.textContent="Tap again to clear";setTimeout(()=>{clearArmed=false;e.target.textContent="Clear the form"},3000);return}
+  fields.forEach(f=>f.value="");save("plan",{});clearArmed=false;e.target.textContent="Clear the form";pst.textContent="Cleared.";fb.hidden=true});
+
+/* ---------- render everything from state ---------- */
+function renderAll(){renderWarn();renderBags();renderPets();renderKit();renderUp();fillPlan();fillWater();calcWater()}
+renderAll();
+/* ---------- Supabase sign-in: each person's list in their own row, protected by row-level security ---------- */
+const SB_URL="__SUPABASE_URL__", SB_KEY="__SUPABASE_ANON_KEY__";
+const acct=document.getElementById("acct"),acctOut=document.getElementById("acctOut"),acctIn=document.getElementById("acctIn"),
+      authForm=document.getElementById("authForm"),authMsg=document.getElementById("authMsg"),acctEmail=document.getElementById("acctEmail");
+let sb=null,uid=null;
+async function pull(first){
+  if(!sb||!uid)return;
+  const id=uid;
+  const {data,error}=await sb.from("user_state").select("data").eq("user_id",id).maybeSingle();
+  if(id!==uid)return;
+  if(error){if(first)setSync("error");return}
+  const r=data&&data.data, ra=(r&&r._at)||0, la=state._at||0;
+  if(r&&ra>la)applyRemote(r);
+  if(first){remoteOK=true;setSync("account");if(la>ra&&Object.keys(state).length>1)queueRemote()}
+}
+function startSync(id){
+  if(uid===id)return;
+  uid=id;remoteOK=false;setSync("connecting");
+  ref={set:async d=>{const {error}=await sb.from("user_state").upsert({user_id:id,data:d,updated_at:new Date().toISOString()});
+    if(error)throw {code:/fetch|network|timeout/i.test(error.message||"")?"unavailable":"error"}}};
+  pull(true);
+}
+function stopSync(){uid=null;ref=null;remoteOK=false;dirty=false;state={};lsSet("state",state);renderAll();setSync("local")}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&remoteOK&&!dirty&&!writing)pull(false)});
+function showIn(email){acctOut.hidden=true;authForm.hidden=true;acctIn.hidden=false;acctEmail.textContent=email||"your account"}
+function showOut(){acctIn.hidden=true;acctOut.hidden=false}
+function initAuth(){
+  if(!/^https:\/\//.test(SB_URL)||!window.supabase||!window.supabase.createClient)return;
+  try{sb=window.supabase.createClient(SB_URL,SB_KEY)}catch(e){return}
+  acct.hidden=false;
+  sb.auth.onAuthStateChange((ev,session)=>{setTimeout(()=>{
+    if(session&&session.user){showIn(session.user.email);startSync(session.user.id)}
+    else{showOut();if(uid)stopSync()}},0)});
+}
+document.getElementById("openSignIn").addEventListener("click",()=>{authForm.hidden=!authForm.hidden;if(!authForm.hidden)document.getElementById("authEmail").focus()});
+authForm.addEventListener("submit",e=>e.preventDefault());
+async function doAuth(kind){
+  if(!sb)return;
+  const email=document.getElementById("authEmail").value.trim(),password=document.getElementById("authPass").value;
+  if(!email||password.length<8){authMsg.textContent="Enter your email and a password of at least 8 characters.";return}
+  authMsg.textContent=kind==="up"?"Creating your account…":"Signing in…";
+  try{
+    const res=kind==="up"?await sb.auth.signUp({email,password}):await sb.auth.signInWithPassword({email,password});
+    if(res.error){authMsg.textContent=kind==="up"?"Couldn't create the account: "+res.error.message:"Couldn't sign in: "+res.error.message+". Check your email and password, or create an account.";return}
+    if(kind==="up"&&!res.data.session){authMsg.textContent="Account created. Check your email for a link to confirm it, then sign in.";return}
+    authMsg.textContent="";document.getElementById("authPass").value="";
+  }catch(err){authMsg.textContent="Couldn't reach the sign-in service. Your list is still saved on this device."}
+}
+document.getElementById("signInBtn").addEventListener("click",()=>doAuth("in"));
+document.getElementById("signUpBtn").addEventListener("click",()=>doAuth("up"));
+document.getElementById("signOut").addEventListener("click",async()=>{try{await sb.auth.signOut()}catch(e){}showOut();stopSync()});
+initAuth();
+})();
+</script>
+
+</body>
+</html>
