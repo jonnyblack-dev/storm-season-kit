@@ -73,6 +73,8 @@ p{margin:0}
 .auth-msg{color:var(--band-ink);min-height:1.2em}
 .auth-msg:empty{display:none}
 .auth-note{font-size:.78rem}
+.acct details.pw summary{cursor:pointer;color:var(--band-ink);font-size:.85rem;width:max-content}
+.acct details.pw[open]{display:flex;flex-direction:column;gap:10px}
 
 /* Tabs */
 .tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
@@ -217,9 +219,16 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
       <form id="authForm" hidden autocomplete="on">
         <div class="auth-row">
           <div class="field"><label for="authEmail">Email</label><input id="authEmail" type="email" autocomplete="email" required></div>
-          <div class="field"><label for="authPass">Password (8+ characters)</label><input id="authPass" type="password" autocomplete="current-password" minlength="8" required></div>
         </div>
-        <div class="auth-btns"><button class="btn primary" type="button" id="signInBtn">Sign in</button><button class="btn band-btn" type="button" id="signUpBtn">Create account</button></div>
+        <div class="auth-btns"><button class="btn primary" type="button" id="linkBtn">Email me a sign-in link</button></div>
+        <p class="auth-note">We'll email you a link. Open it on this device and you're signed in, no password needed. It works for new and existing accounts.</p>
+        <details class="pw">
+          <summary>Use a password instead</summary>
+          <div class="auth-row">
+            <div class="field"><label for="authPass">Password (8+ characters)</label><input id="authPass" type="password" autocomplete="current-password" minlength="8"></div>
+          </div>
+          <div class="auth-btns"><button class="btn band-btn" type="button" id="signInBtn">Sign in</button><button class="btn band-btn" type="button" id="signUpBtn">Create account</button></div>
+        </details>
         <p class="auth-msg" id="authMsg" aria-live="polite"></p>
         <p class="auth-note">We only store your email and your list. Your list is private to you.</p>
       </form>
@@ -956,6 +965,17 @@ function initAuth(){
 }
 document.getElementById("openSignIn").addEventListener("click",()=>{authForm.hidden=!authForm.hidden;if(!authForm.hidden)document.getElementById("authEmail").focus()});
 authForm.addEventListener("submit",e=>e.preventDefault());
+async function sendLink(){
+  if(!sb)return;
+  const email=document.getElementById("authEmail").value.trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){authMsg.textContent="Enter your email address.";return}
+  authMsg.textContent="Sending your link…";
+  try{
+    const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname}});
+    authMsg.textContent=error?"Couldn't send the link: "+error.message:"Check your email for a sign-in link and open it on this device. It can take a minute; check your junk folder too.";
+  }catch(err){authMsg.textContent="Couldn't reach the sign-in service. Your list is still saved on this device."}
+}
+document.getElementById("linkBtn").addEventListener("click",sendLink);
 async function doAuth(kind){
   if(!sb)return;
   const email=document.getElementById("authEmail").value.trim(),password=document.getElementById("authPass").value;
