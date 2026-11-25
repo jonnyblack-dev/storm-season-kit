@@ -10,6 +10,10 @@ create table if not exists public.storm_kit_user_state (
   updated_at timestamptz not null default now()
 );
 
+-- Signed-in users may use the table (row-level security below limits them to their own row).
+-- Signed-out visitors get no access at all.
+grant select, insert, update, delete on public.storm_kit_user_state to authenticated;
+
 -- Row-level security: each person can only see and change their own row.
 alter table public.storm_kit_user_state enable row level security;
 
