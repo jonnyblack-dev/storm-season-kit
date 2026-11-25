@@ -252,7 +252,7 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
 <section data-view="kit" hidden>
   <div>
     <h2>Kit list</h2>
-    <p class="lead">Everything to stay home for 3 days without power, water or shops, building up to 14 days. Quantities are for 2 adults, so scale for your household. Water comes first, then food, light and power, and medical. Items marked <span class="tag start" style="margin:0">Start here</span> are cheap and give the most value.</p>
+    <p class="lead">Everything to stay home for 3 days without power, water or shops, building up to 7 and then 14 days. Quantities are for 2 adults, so scale for your household. Water comes first, then food, light and power, and medical. Items marked <span class="tag start" style="margin:0">Start here</span> are cheap and give the most value.</p>
   </div>
 
   <div class="panel">
@@ -269,6 +269,7 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
   <div class="controls">
     <div class="seg" role="group" aria-label="Kit size">
       <button type="button" data-days="72" aria-pressed="true">72 hours</button>
+      <button type="button" data-days="7" aria-pressed="false">7 days</button>
       <button type="button" data-days="14" aria-pressed="false">14 days</button>
     </div>
     <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
@@ -619,6 +620,51 @@ const K=[
 ["Ready-made kits","Civil Defence MRE 2-person ration pack","—","1",0,240,"Aussie Storm Shop (online)",["Civil Defence 2-person kit (Aussie Storm Shop)","https://www.aussiestormshop.com.au/civil-defence-survival-pack-2-person"],"3 days of ration food for 2 adults with heaters and a stove. 3+ year shelf life.","opt"],
 ["Other","Cards, books, glow sticks","Some","Some",15,15,"Kmart",null,"",""]
 ];
+// 7-day amounts (between the 72-hour and 14-day lists; items not listed use the 72-hour amount)
+const SEVEN={
+"20 L food-grade water jerry cans with tap":["4",120],
+"Bottled water slab (24 × 600 mL)":["2",16],
+"Collapsible 20 L water containers":["1",15],
+"Water purification tablets":["1 pack",15],
+"Portable water filter (squeeze or straw type)":["—",0],
+"Canned fish (tuna or salmon, ~95 g tins)":["~17 tins",38],
+"Canned meat or chicken (or plant-based)":["~6 tins (0.9 kg)",23],
+"Canned vegetables (mixed, corn, potatoes, beetroot)":["~14 cans",23],
+"Baked beans and canned legumes":["6 cans",9],
+"Canned fruit in juice":["6 cans",15],
+"Ready-to-eat rice or noodle pouches":["7 pouches",18],
+"Crispbread or dry crackers":["2 boxes",7],
+"Long-life wraps or flatbread":["2 packs",8],
+"Breakfast cereal or muesli":["2 boxes",12],
+"UHT long-life milk (1 L)":["5",9],
+"Long-life custard or puddings":["4",5],
+"Nuts, seeds and dried fruit":["450 g nuts, 200 g fruit",18],
+"Snacks, muesli bars, chocolate, tea, coffee, sugar":["1 week's worth",25],
+"Freeze-dried meals":["—",0],
+"Butane gas canisters":["7",20],
+"Disposable plates, bowls, cups, cutlery":["1 week",15],
+"Hand sanitiser, dish liquid, paper towel":["1 week",12],
+"AA and AAA batteries (bulk packs)":["1 pack each",20],
+"Rechargeable or battery fan":["1",30],
+"Portable power station (500–1,000 Wh) and folding solar panel":["—",0],
+"Home battery with blackout (backup) mode":["Quote",null],
+"Prescription medicines and copies of scripts":["7 days",null],
+"Pain relief, antihistamine, antiseptic, rehydration salts":["1 week",30],
+"Toilet paper":["1 big pack",12],
+"Wet wipes, soap, toothpaste, deodorant, dry shampoo":["1 week",20],
+"Insect repellent and sunscreen":["1 each",15],
+"Emergency toilet: 20 L bucket with lid, heavy-duty bags, kitty litter":["1 kit",40],
+"Extra water for a small dog":["4 L",5],
+"Spare sealed bag of their usual dry food":["7 days",44],
+"Pet medicines, tick and flea prevention, vet records, recent photo":["7 days",null],
+"Heavy-duty garbage bags and ties":["2 rolls",15],
+"Cash in small notes":["$300",null],
+"Heavy-duty storage tubs with lids (~70 L)":["3",60],
+"Civil Defence MRE 2-person ration pack":["—",0]
+};
+function qtyOf(r){if(days==="72")return r[2];if(days==="14")return r[3];const o=SEVEN[r[1]];return o?o[0]:r[2]}
+function costOf(r){if(days==="72")return r[4];if(days==="14")return r[5];const o=SEVEN[r[1]];return o?o[1]:r[4]}
+const DAY_LABEL={"72":"72 hours","7":"7 days","14":"14 days"};
 const CATS=[...new Set(K.map(r=>r[0]))];
 let days=lsGet("days","72"), cat=lsGet("cat","All"), hide=!!lsGet("hide",false);
 let ticks={};
@@ -626,29 +672,28 @@ const kitList=document.getElementById("kitList"), chips=document.getElementById(
 chips.innerHTML=["All",...CATS].map(c=>`<button type="button" class="chip" data-cat="${esc(c)}">${esc(c)}</button>`).join("");
 document.getElementById("hideDone").checked=hide;
 const keyOf=r=>r[0]+"|"+r[1];
-function needed(r){const q=days==="72"?r[2]:r[3];return q!=="—"}
+function needed(r){return qtyOf(r)!=="—"}
 function renderKit(){
   ticks=load("kit",{});
   document.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.days===days)));
   chips.querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.cat===cat)));
-  const ci=days==="72"?4:5, qi=days==="72"?2:3;
   const rows=K.filter(needed);
   let total=0,left=0,done=0;
-  rows.forEach(r=>{const c=r[ci]||0;total+=c;if(ticks[keyOf(r)])done++;else left+=c});
+  rows.forEach(r=>{const c=costOf(r)||0;total+=c;if(ticks[keyOf(r)])done++;else left+=c});
   document.getElementById("sCount").textContent=done+" / "+rows.length;
   document.getElementById("sMeter").style.width=(rows.length?done/rows.length*100:0)+"%";
   document.getElementById("sTotal").textContent=money(total);
-  document.getElementById("sTotalLbl").textContent="est. cost, "+(days==="72"?"72 hours":"14 days");
+  document.getElementById("sTotalLbl").textContent="est. cost, "+DAY_LABEL[days];
   document.getElementById("sLeft").textContent=money(left);
   const html=CATS.filter(c=>cat==="All"||c===cat).map(c=>{
     const rs=rows.filter(r=>r[0]===c);if(!rs.length)return "";
     const d=rs.filter(r=>ticks[keyOf(r)]).length;
     const shown=rs.filter(r=>!(hide&&ticks[keyOf(r)]));
     const items=shown.map(r=>{const k=keyOf(r),id="k"+K.indexOf(r),on=!!ticks[k];
-      const cost=r[ci]==null?(/free|own/i.test(r[6])?"Free":"Varies"):money(r[ci]);
+      const cv=costOf(r);const cost=cv==null?(/free|own/i.test(r[6])?"Free":"Varies"):money(cv);
       const tag=r[9]==="start"?'<span class="tag start">Start here</span>':r[9]==="opt"?'<span class="tag opt">Optional</span>':"";
       const more=(r[8]||r[7])?`<details><summary>Details</summary>${r[8]?`<p>${esc(r[8])}</p>`:""}${r[7]?`<p><a href="${esc(r[7][1])}" target="_blank" rel="noopener">${esc(r[7][0])}</a></p>`:""}</details>`:"";
-      return `<div class="item${on?" done":""}"><input type="checkbox" id="${id}" data-k="${esc(k)}" ${on?"checked":""} aria-label="Got ${esc(r[1])}"><label class="name" for="${id}">${esc(r[1])}${tag}</label><span class="cost">${cost}</span><div class="meta">${esc(r[qi])} · ${esc(r[6])}</div>${more}</div>`}).join("");
+      return `<div class="item${on?" done":""}"><input type="checkbox" id="${id}" data-k="${esc(k)}" ${on?"checked":""} aria-label="Got ${esc(r[1])}"><label class="name" for="${id}">${esc(r[1])}${tag}</label><span class="cost">${cost}</span><div class="meta">${esc(qtyOf(r))} · ${esc(r[6])}</div>${more}</div>`}).join("");
     return `<div class="cat"><div class="cat-head"><h3>${esc(c)}</h3><small>${d} of ${rs.length}</small></div>${items||'<p class="small muted" style="padding:10px 0">All ticked.</p>'}</div>`}).join("");
   kitList.innerHTML=html;
 }
