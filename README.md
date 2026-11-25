@@ -7,11 +7,11 @@ Based on Get Ready Queensland, Queensland Health, Brisbane City Council and SES 
 ## Saving your list
 
 - Signed out: ticks, upkeep dates and your household plan are saved in your browser on that device only.
-- Signed in (email and password): they're saved to your own private row in Supabase, protected by row-level security, so only you can read or change them. Only your email and your list are stored.
+- Signed in (email and password): they're saved to your own private row in Supabase (table `storm_kit_user_state`), protected by row-level security, so only you can read or change them. Only your email and your list are stored.
 
 ## Setup (for the site owner)
 
 1. Create a Supabase project.
 2. Run `supabase-setup.sql` in the SQL Editor.
-3. In Authentication > Sign In / Providers > Email, turn off "Confirm email" (Supabase's built-in email only sends to the project's own team).
+3. Supabase's built-in email only sends to the project's own team. Either turn off "Confirm email" (Authentication > Sign In / Providers > Email; this applies to every site using the project), or keep it on and create family accounts yourself under Authentication > Users > Add user > Create new user, with "Auto Confirm User" ticked.
 4. Put the project URL and the anon / publishable key into `index.html` (`SB_URL` and `SB_KEY`). Never use the service-role or secret key.

@@ -752,7 +752,7 @@ let sb=null,uid=null;
 async function pull(first){
   if(!sb||!uid)return;
   const id=uid;
-  const {data,error}=await sb.from("user_state").select("data").eq("user_id",id).maybeSingle();
+  const {data,error}=await sb.from("storm_kit_user_state").select("data").eq("user_id",id).maybeSingle();
   if(id!==uid)return;
   if(error){if(first)setSync("error");return}
   const r=data&&data.data, ra=(r&&r._at)||0, la=state._at||0;
@@ -762,7 +762,7 @@ async function pull(first){
 function startSync(id){
   if(uid===id)return;
   uid=id;remoteOK=false;setSync("connecting");
-  ref={set:async d=>{const {error}=await sb.from("user_state").upsert({user_id:id,data:d,updated_at:new Date().toISOString()});
+  ref={set:async d=>{const {error}=await sb.from("storm_kit_user_state").upsert({user_id:id,data:d,updated_at:new Date().toISOString()});
     if(error)throw {code:/fetch|network|timeout/i.test(error.message||"")?"unavailable":"error"}}};
   pull(true);
 }
