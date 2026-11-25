@@ -410,7 +410,7 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"></script>
 <script>
 (function(){
 "use strict";
@@ -745,7 +745,7 @@ document.getElementById("clearPlan").addEventListener("click",e=>{
 function renderAll(){renderWarn();renderBags();renderPets();renderKit();renderUp();fillPlan();fillWater();calcWater()}
 renderAll();
 /* ---------- Supabase sign-in: each person's list in their own row, protected by row-level security ---------- */
-const SB_URL="__SUPABASE_URL__", SB_KEY="__SUPABASE_ANON_KEY__";
+const SB_URL="https://hwdxfplwotvjrtmpvmjo.supabase.co", SB_KEY="sb_publishable_FFV1m24l44ZA1L3iWPmEig_5WvRLJCW";
 const acct=document.getElementById("acct"),acctOut=document.getElementById("acctOut"),acctIn=document.getElementById("acctIn"),
       authForm=document.getElementById("authForm"),authMsg=document.getElementById("authMsg"),acctEmail=document.getElementById("acctEmail");
 let sb=null,uid=null;
