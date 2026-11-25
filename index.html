@@ -58,8 +58,10 @@ p{margin:0}
 .sync[data-state="busy"]::before{background:var(--accent)}
 
 .acct{display:flex;flex-direction:column;gap:10px;font-size:.88rem;color:var(--band-muted)}
+.acct-out{display:flex;gap:10px;align-items:center;flex-wrap:wrap;color:var(--band-ink);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:10px 12px}
+.acct-out span{flex:1 1 260px;min-width:0}
 .acct #acctIn{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.acct #acctIn[hidden],.acct form[hidden],.acct #acctOut[hidden]{display:none}
+.acct #acctIn[hidden],.acct form[hidden],.acct .acct-out[hidden]{display:none}
 .acct strong{color:var(--band-ink);overflow-wrap:anywhere}
 .band-btn{background:transparent;color:var(--band-ink);border-color:rgba(255,255,255,.35)}
 .band-btn:hover{border-color:var(--band-ink)}
@@ -210,7 +212,7 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
     </div>
     <p class="sync" id="syncNote" role="status" data-state="device"></p>
     <div class="acct" id="acct" hidden>
-      <div id="acctOut"><button class="btn band-btn" type="button" id="openSignIn">Sign in or create an account</button></div>
+      <div id="acctOut" class="acct-out"><span>Want your list on your phone and your computer? Create a free account with your email and a password, then sign in on each device. Without an account, your ticks stay on this device only.</span><button class="btn primary" type="button" id="openSignIn">Sign in or create an account</button></div>
       <div id="acctIn" hidden><span>Signed in as <strong id="acctEmail"></strong></span> <button class="btn band-btn" type="button" id="signOut">Sign out</button></div>
       <form id="authForm" hidden autocomplete="on">
         <div class="auth-row">
@@ -448,7 +450,7 @@ const focused=el=>document.activeElement===el;
 /* sync status line */
 const syncEl=document.getElementById("syncNote");
 const SYNC_TEXT={
-  local:["device","Your ticks and plan are saved in this browser on this device. Sign in to keep them on all your devices."],
+  local:["device","Not signed in: your ticks and plan are saved in this browser on this device only."],
   connecting:["busy","Connecting to your account…"],
   account:["ok","Saved to your account. Sign in on any device to see your list. Only you can see it."],
   noaccess:["device","Saved on this device only. Try signing out and in again to save to your account."],
@@ -898,6 +900,20 @@ const SB_URL="https://hwdxfplwotvjrtmpvmjo.supabase.co", SB_KEY="sb_publishable_
 const acct=document.getElementById("acct"),acctOut=document.getElementById("acctOut"),acctIn=document.getElementById("acctIn"),
       authForm=document.getElementById("authForm"),authMsg=document.getElementById("authMsg"),acctEmail=document.getElementById("acctEmail");
 let sb=null,uid=null;
+function mergeStates(a,b){
+  // Combine this device's list with the account's list: keep every tick from either, the latest upkeep dates,
+  // and plan answers from both (the account's wins where both have one).
+  const out={};const keys=new Set([...Object.keys(a||{}),...Object.keys(b||{})]);
+  keys.forEach(k=>{const x=a&&a[k],y=b&&b[k];
+    if(x===undefined){out[k]=y;return}if(y===undefined){out[k]=x;return}
+    if(/^(kit|warn\d|bag\d|petB|petW)$/.test(k)){out[k]=Object.assign({},x,y);Object.keys(out[k]).forEach(i=>{out[k][i]=!!(x[i]||y[i]);if(!out[k][i])delete out[k][i]})}
+    else if(k==="upkeep"){out[k]=Object.assign({},x);Object.keys(y).forEach(i=>{if(!out[k][i]||String(y[i])>String(out[k][i]))out[k][i]=y[i]})}
+    else if(k==="plan"){out[k]=Object.assign({},x,y)}
+    else if(k==="_at"){out[k]=Math.max(+x||0,+y||0)}
+    else{out[k]=((b._at||0)>=(a._at||0))?y:x}});
+  return out;
+}
+let mergedOnce=false;
 async function pull(first){
   if(!sb||!uid)return;
   const id=uid;
@@ -905,8 +921,18 @@ async function pull(first){
   if(id!==uid)return;
   if(error){if(first)setSync("error");return}
   const r=data&&data.data, ra=(r&&r._at)||0, la=state._at||0;
+  const localHas=Object.keys(state).some(k=>k!=="_at");
+  if(first&&!mergedOnce&&localHas){
+    // First sign-in on this device: copy this device's ticks into the account instead of replacing them.
+    mergedOnce=true;
+    const m=r?mergeStates(state,r):JSON.parse(JSON.stringify(state));
+    m._at=Date.now();state=m;lsSet("state",state);renderAll();
+    remoteOK=true;setSync("account");dirty=true;flush();
+    if(syncEl)syncEl.textContent+=" Anything you'd ticked on this device has been added to it.";
+    return;
+  }
   if(r&&ra>la)applyRemote(r);
-  if(first){remoteOK=true;setSync("account");if(la>ra&&Object.keys(state).length>1)queueRemote()}
+  if(first){remoteOK=true;setSync("account")}
 }
 function startSync(id){
   if(uid===id)return;
@@ -915,7 +941,7 @@ function startSync(id){
     if(error)throw {code:/fetch|network|timeout/i.test(error.message||"")?"unavailable":"error"}}};
   pull(true);
 }
-function stopSync(){uid=null;ref=null;remoteOK=false;dirty=false;state={};lsSet("state",state);renderAll();setSync("local")}
+function stopSync(){mergedOnce=false;uid=null;ref=null;remoteOK=false;dirty=false;state={};lsSet("state",state);renderAll();setSync("local")}
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&remoteOK&&!dirty&&!writing)pull(false)});
 function showIn(email){acctOut.hidden=true;authForm.hidden=true;acctIn.hidden=false;acctEmail.textContent=email||"your account"}
 function showOut(){acctIn.hidden=true;acctOut.hidden=false}
