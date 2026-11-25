@@ -264,11 +264,12 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
     <h3>How much water to store</h3>
     <div class="calc" style="margin-top:10px">
       <div class="field"><label for="wPeople">People</label><input id="wPeople" type="number" min="1" max="20" value="2" inputmode="numeric"></div>
-      <div class="field"><label for="wPets">Small pets</label><input id="wPets" type="number" min="0" max="10" value="1" inputmode="numeric"></div>
+      <div class="field"><label for="wPets">Small dogs</label><input id="wPets" type="number" min="0" max="10" value="1" inputmode="numeric"></div>
+      <div class="field"><label for="wLarge">Large dogs</label><input id="wLarge" type="number" min="0" max="10" value="0" inputmode="numeric"></div>
       <div class="field"><label for="wDays">Days</label><select id="wDays"><option value="3">3 days</option><option value="7">7 days</option><option value="14">14 days</option></select></div>
       <div class="calc-out" id="wOut" aria-live="polite">30<small>litres</small></div>
     </div>
-    <p class="small muted" style="margin-top:10px">Uses 5 L per person per day for drinking, cooking and a basic wash, and about 0.5 L a day for a small dog in summer. Get Ready Queensland's minimum is 10 L per person for 3 days, so this plans above it. Fill the bathtub too when a warning comes, for flushing.</p>
+    <p class="small muted" style="margin-top:10px">Uses 5 L per person per day for drinking, cooking and a basic wash, about 0.5 L a day for a small dog and 3 L a day for a large dog in summer. Get Ready Queensland's minimum is 10 L per person for 3 days, so this plans above it. Fill the bathtub too when a warning comes, for flushing.</p>
   </div>
 
   <div class="controls">
@@ -278,6 +279,11 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
       <button type="button" data-days="14" aria-pressed="false">14 days</button>
     </div>
     <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
+    <div class="seg" role="group" aria-label="Pet">
+      <button type="button" data-pet="none" aria-pressed="false">No pet</button>
+      <button type="button" data-pet="small" aria-pressed="true">Small dog</button>
+      <button type="button" data-pet="large" aria-pressed="false">Large dog</button>
+    </div>
     <label class="toggle"><input type="checkbox" id="hideDone"> Hide items I've ticked</label>
     <div class="print-row"><button class="btn print-btn" type="button">Print or save as PDF</button><span class="print-msg small muted" aria-live="polite"></span></div>
   </div>
@@ -427,7 +433,7 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
 "use strict";
 /* ---------- state: saved to the viewer's own account when possible, always cached on this device ---------- */
 const PFX="ssk:";
-const SYNCED=["kit","warn0","warn1","warn2","bag0","bag1","petB","petW","upkeep","plan","water"];
+const SYNCED=["pet","kit","warn0","warn1","warn2","bag0","bag1","petB","petW","upkeep","plan","water"];
 function lsGet(k,d){try{const v=localStorage.getItem(PFX+k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 function lsSet(k,v){try{localStorage.setItem(PFX+k,JSON.stringify(v))}catch(e){}}
 let state=lsGet("state",null);
@@ -672,9 +678,29 @@ const SEVEN={
 "Heavy-duty storage tubs with lids (~70 L)":["3",60],
 "Civil Defence MRE 2-person ration pack":["—",0]
 };
-function qtyOf(r){if(days==="72")return r[2];if(days==="14")return r[3];const o=SEVEN[r[1]];return o?o[0]:r[2]}
-function costOf(r){if(days==="72")return r[4];if(days==="14")return r[5];const o=SEVEN[r[1]];return o?o[1]:r[4]}
+function qtyOf(r){if(r.lq)return r.lq[LVL[days]];if(days==="72")return r[2];if(days==="14")return r[3];const o=SEVEN[r[1]];return o?o[0]:r[2]}
+function costOf(r){if(r.lc)return r.lc[LVL[days]];if(days==="72")return r[4];if(days==="14")return r[5];const o=SEVEN[r[1]];return o?o[1]:r[4]}
 const DAY_LABEL={"72":"72 hours","7":"7 days","14":"14 days"};
+// Large dog (e.g. a 45–60 kg Bullmastiff): replaces the small-dog amounts. All estimates.
+const LARGE={
+"Extra water for a small dog":{n:"Extra water for a large dog",q:["15 L (5 days)","21 L","42 L"],c:[30,30,60],w:"Bunnings, BCF (extra 20 L jerry can)",link:null,note:"A 50 kg dog drinks about 2.5–3 L a day, more in heat. Store it in an extra 20 L jerry can (two for 14 days). Get Ready Queensland says keep at least 5 days of pet water and food. Estimate."},
+"Spare sealed bag of their usual dry food":{q:["5 days (~4 kg)","7 days (~5.5 kg)","14 days (~11 kg)"],c:[100,100,100],w:"Petbarn, Petstock, supermarket",note:"A large dog eats roughly 600–800 g of dry food a day; check the bag's feeding guide. One spare 15 kg large-breed bag covers 14 days. Stick to their usual food. Estimate."},
+"Foldable pet carrier":{n:"Strong harness, short lead and car restraint (or crate)",q:["1 set","1 set","1 set"],c:[60,60,60],w:"Petbarn, Petstock",link:null,note:"A carrier isn't practical for a big dog. A well-fitted harness and short lead give control in a crowd, and a car harness or crate keeps them secure on the road. Estimate."},
+"Collapsible travel bowls":{n:"Large collapsible bowls (food and water)",c:[15,15,15],w:"Petbarn, Petstock, BCF",link:null,note:"Estimate. Clip them to the grab bag."},
+"Spare lead and collar with ID tag":{c:[35,35,35],w:"Petbarn, Petstock",link:null,note:"Estimate for large-breed sizes. Check the microchip registry has your current phone numbers."},
+"Pet cooling mat, small":{n:"Pet cooling mat, large",c:[50,50,50],w:"Petbarn, Petstock, Kmart",link:null,note:"Estimate: about $40–60. Heavy, short-nosed breeds like Bullmastiffs overheat easily, so a no-power gel mat, shade and water matter on hot blackout nights."},
+"Poo bags, puppy pads, old towel or blanket, favourite toy":{n:"Poo bags, old towels or blanket, favourite toy",note:"A familiar blanket settles an anxious dog. Old towels for drying off after the storm."}
+};
+const petSize=()=>{const p=load("pet","small");return ["none","small","large"].includes(p)?p:"small"};
+const LVL={"72":0,"7":1,"14":2};
+function eff(r,i){
+  if(r[0]!=="Pet")return r;
+  const p=petSize();if(p==="none")return null;
+  const o=p==="large"?LARGE[r[1]]:null;if(!o)return r;
+  const x=r.slice();x.i=i;if(o.n)x.dn=o.n;if(o.q)x.lq=o.q;if(o.c)x.lc=o.c;if(o.w)x[6]=o.w;if("link" in o)x[7]=o.link;if(o.note)x[8]=o.note;return x;
+}
+const dn=r=>r.dn||r[1];
+const PET_LABEL={none:"",small:" · small dog",large:" · large dog"};
 const CATS=[...new Set(K.map(r=>r[0]))];
 let days=lsGet("days","72"), cat=lsGet("cat","All"), hide=!!lsGet("hide",false);
 let ticks={};
@@ -685,9 +711,10 @@ const keyOf=r=>r[0]+"|"+r[1];
 function needed(r){return qtyOf(r)!=="—"}
 function renderKit(){
   ticks=load("kit",{});
-  document.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.days===days)));
+  document.querySelectorAll(".seg button[data-days]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.days===days)));
+  document.querySelectorAll(".seg button[data-pet]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.pet===petSize())));
   chips.querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.cat===cat)));
-  const rows=K.filter(needed);
+  const rows=K.map(eff).filter(r=>r&&needed(r));
   let total=0,left=0,done=0;
   rows.forEach(r=>{const c=costOf(r)||0;total+=c;if(ticks[keyOf(r)])done++;else left+=c});
   document.getElementById("sCount").textContent=done+" / "+rows.length;
@@ -699,26 +726,27 @@ function renderKit(){
     const rs=rows.filter(r=>r[0]===c);if(!rs.length)return "";
     const d=rs.filter(r=>ticks[keyOf(r)]).length;
     const shown=rs.filter(r=>!(hide&&ticks[keyOf(r)]));
-    const items=shown.map(r=>{const k=keyOf(r),id="k"+K.indexOf(r),on=!!ticks[k];
+    const items=shown.map(r=>{const k=keyOf(r),id="k"+(r.i!=null?r.i:K.indexOf(r)),on=!!ticks[k];
       const cv=costOf(r);const cost=cv==null?(/free|own/i.test(r[6])?"Free":"Varies"):money(cv);
       const tag=r[9]==="start"?'<span class="tag start">Start here</span>':r[9]==="opt"?'<span class="tag opt">Optional</span>':"";
       const more=(r[8]||r[7])?`<details><summary>Details</summary>${r[8]?`<p>${esc(r[8])}</p>`:""}${r[7]?`<p><a href="${esc(r[7][1])}" target="_blank" rel="noopener">${esc(r[7][0])}</a></p>`:""}</details>`:"";
-      return `<div class="item${on?" done":""}"><input type="checkbox" id="${id}" data-k="${esc(k)}" ${on?"checked":""} aria-label="Got ${esc(r[1])}"><label class="name" for="${id}">${esc(r[1])}${tag}</label><span class="cost">${cost}</span><div class="meta">${esc(qtyOf(r))} · ${esc(r[6])}</div>${more}</div>`}).join("");
+      return `<div class="item${on?" done":""}"><input type="checkbox" id="${id}" data-k="${esc(k)}" ${on?"checked":""} aria-label="Got ${esc(dn(r))}"><label class="name" for="${id}">${esc(dn(r))}${tag}</label><span class="cost">${cost}</span><div class="meta">${esc(qtyOf(r))} · ${esc(r[6])}</div>${more}</div>`}).join("");
     return `<div class="cat"><div class="cat-head"><h3>${esc(c)}</h3><small>${d} of ${rs.length}</small></div>${items||'<p class="small muted" style="padding:10px 0">All ticked.</p>'}</div>`}).join("");
   kitList.innerHTML=html;
 }
 kitList.addEventListener("change",e=>{const k=e.target.dataset.k;if(!k)return;const t=load("kit",{});if(e.target.checked)t[k]=true;else delete t[k];save("kit",t);renderKit()});
-document.querySelectorAll(".seg button").forEach(b=>b.addEventListener("click",()=>{days=b.dataset.days;lsSet("days",days);renderKit()}));
+document.querySelectorAll(".seg button[data-days]").forEach(b=>b.addEventListener("click",()=>{days=b.dataset.days;lsSet("days",days);renderKit()}));
+document.querySelectorAll(".seg button[data-pet]").forEach(b=>b.addEventListener("click",()=>{save("pet",b.dataset.pet);renderKit()}));
 chips.addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;cat=b.dataset.cat;lsSet("cat",cat);renderKit()});
 document.getElementById("hideDone").addEventListener("change",e=>{hide=e.target.checked;lsSet("hide",hide);renderKit()});
 
 /* water calculator */
-const wP=document.getElementById("wPeople"),wPe=document.getElementById("wPets"),wD=document.getElementById("wDays"),wO=document.getElementById("wOut");
-function fillWater(){const w=load("water",null);if(!w)return;if(!focused(wP))wP.value=w.p;if(!focused(wPe))wPe.value=w.pe;if(!focused(wD))wD.value=w.d}
-function calcWater(){const p=Math.max(0,+wP.value||0),pe=Math.max(0,+wPe.value||0),d=+wD.value||3;
-  const l=Math.ceil(p*5*d+pe*0.5*d);wO.innerHTML=l+"<small>litres ("+Math.ceil(l/20)+" × 20 L)</small>"}
+const wP=document.getElementById("wPeople"),wPe=document.getElementById("wPets"),wL=document.getElementById("wLarge"),wD=document.getElementById("wDays"),wO=document.getElementById("wOut");
+function fillWater(){const w=load("water",null);if(!w)return;if(!focused(wP))wP.value=w.p;if(!focused(wPe))wPe.value=w.pe;if(!focused(wL))wL.value=w.lg||0;if(!focused(wD))wD.value=w.d}
+function calcWater(){const p=Math.max(0,+wP.value||0),pe=Math.max(0,+wPe.value||0),lg=Math.max(0,+wL.value||0),d=+wD.value||3;
+  const l=Math.ceil(p*5*d+pe*0.5*d+lg*3*d);wO.innerHTML=l+"<small>litres ("+Math.ceil(l/20)+" × 20 L)</small>"}
 let wT=null;
-[wP,wPe,wD].forEach(el=>el.addEventListener("input",()=>{calcWater();clearTimeout(wT);wT=setTimeout(()=>save("water",{p:wP.value,pe:wPe.value,d:wD.value}),600)}));
+[wP,wPe,wL,wD].forEach(el=>el.addEventListener("input",()=>{calcWater();clearTimeout(wT);wT=setTimeout(()=>save("water",{p:wP.value,pe:wPe.value,lg:wL.value,d:wD.value}),600)}));
 
 /* ---------- grab bags ---------- */
 const BAGS=[
@@ -818,17 +846,17 @@ function buildPrint(){
   const kit=load("kit",{}),label=DAY_LABEL[days];
   const today=new Date().toLocaleDateString("en-AU",{day:"numeric",month:"long",year:"numeric"});
   const li=(on,main,extra)=>`<li><span class="bx">${on?"✓":""}</span><span>${esc(main)}${extra?` <span class="q">· ${esc(extra)}</span>`:""}</span></li>`;
-  const rows=K.filter(needed);
+  const rows=K.map(eff).filter(r=>r&&needed(r));
   let total=0;rows.forEach(r=>{total+=costOf(r)||0});
   const kitHtml=CATS.map(c=>{const rs=rows.filter(r=>r[0]===c);if(!rs.length)return "";
-    return `<h3>${esc(c)}</h3><ul>${rs.map(r=>li(!!kit[keyOf(r)],r[1],qtyOf(r))).join("")}</ul>`}).join("");
+    return `<h3>${esc(c)}</h3><ul>${rs.map(r=>li(!!kit[keyOf(r)],dn(r),qtyOf(r))).join("")}</ul>`}).join("");
   const warnHtml=WARN.map((p,i)=>{const s=load("warn"+i,{});return `<h3>${esc(p[0])}</h3><ul>${p[1].map((it,j)=>li(!!s[j],it[0],"")).join("")}</ul>`}).join("");
   const bagHtml=BAGS.map((b,i)=>{const s=load("bag"+i,{});return `<h3>${esc(b[0])}</h3><ul>${b[1].map((it,j)=>li(!!s[j],it[0],"")).join("")}</ul>`}).join("");
   const plan=load("plan",{});
   const planHtml=fields.map(f=>`<div><b>${esc(f.name)}</b><span>${esc(plan[f.id]||"")}</span></div>`).join("");
   return `<div class="pr">
 <h1>Storm Season Kit</h1>
-<p class="sub">Checklist for ${esc(label)} · 2 adults · printed ${esc(today)} · est. cost ${money(total)}</p>
+<p class="sub">Checklist for ${esc(label)} · 2 adults${PET_LABEL[petSize()]} · printed ${esc(today)} · est. cost ${money(total)}</p>
 <div class="nums"><span><b>000</b> life in danger</span><span><b>132 500</b> SES</span><span><b>13 19 62</b> Energex</span><span><b>612 AM</b> ABC Radio Brisbane</span><span><b>13 43 25 84</b> 13 HEALTH</span></div>
 <h2>Our household plan</h2><div class="plan">${planHtml}</div>
 <h2>When a warning is issued</h2><div class="cols">${warnHtml}</div>
