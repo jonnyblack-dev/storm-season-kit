@@ -468,7 +468,7 @@ async function flush(){
   catch(e){const c=e&&e.code;
     if(c==="unavailable"&&!retried){retried=true;dirty=true;setTimeout(flush,1000+Math.random()*1500)}
     else if(c==="invalid_argument"||c==="revoked"||c==="not_granted"||c==="capability_disabled"||c==="capability_removed"||c==="transform_error"){remoteOK=false;setSync("noaccess")}
-    else{retried=false;setSync("error")}}
+    else{retried=false;setSync("error");if(e&&e.message&&typeof sbDetail==="function")sbDetail(e.message)}}
   finally{writing=false;if(dirty&&remoteOK&&!retried){clearTimeout(timer);timer=setTimeout(flush,800)}}
 }
 function applyRemote(r){const next=JSON.parse(JSON.stringify(r||{}));state=next;lsSet("state",state);renderAll()}
@@ -919,7 +919,7 @@ async function pull(first){
   const id=uid;
   const {data,error}=await sb.from("storm_kit_user_state").select("data").eq("user_id",id).maybeSingle();
   if(id!==uid)return;
-  if(error){if(first)setSync("error");return}
+  if(error){if(first){setSync("error");sbDetail(error.message)}return}
   const r=data&&data.data, ra=(r&&r._at)||0, la=state._at||0;
   const localHas=Object.keys(state).some(k=>k!=="_at");
   if(first&&!mergedOnce&&localHas){
@@ -934,11 +934,12 @@ async function pull(first){
   if(r&&ra>la)applyRemote(r);
   if(first){remoteOK=true;setSync("account")}
 }
+function sbDetail(m){if(syncEl&&m)syncEl.textContent+=" (Details: "+String(m).slice(0,120)+")";try{console.warn("Storm Season Kit sync:",m)}catch(e){}}
 function startSync(id){
   if(uid===id)return;
   uid=id;remoteOK=false;setSync("connecting");
   ref={set:async d=>{const {error}=await sb.from("storm_kit_user_state").upsert({user_id:id,data:d,updated_at:new Date().toISOString()});
-    if(error)throw {code:/fetch|network|timeout/i.test(error.message||"")?"unavailable":"error"}}};
+    if(error)throw {code:/fetch|network|timeout/i.test(error.message||"")?"unavailable":"error",message:error.message}}};
   pull(true);
 }
 function stopSync(){mergedOnce=false;uid=null;ref=null;remoteOK=false;dirty=false;state={};lsSet("state",state);renderAll();setSync("local")}
